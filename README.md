@@ -7,10 +7,9 @@
 ## Abstract
 Using protein localization and PPI datasets, your team will (i) design a parameterized 3D “organelle space” for a single cell, (ii) map each protein to a compartment-specific (x, y, z) position using biologically meaningful placement rules, and (iii) render the full network in VR, where nodes are proteins positioned by their localization and edges represent physical interactions from the in-house PPI source. 
 
-
 Your task is to define the relative organelle geometry and local placement logic (e.g., membrane-proximal vs. lumenal) or, where evidence is missing, assume organelle boundaries and areas within an absolute 3D space. Multi-localized proteins may be duplicated across compartments, subject to feasibility under the platform’s ~2 Mio. node constraints. If duplication would exceed limits, you will design an alternative encoding (e.g., toggles or weighted placement). Node annotations will serve the basis for interactive analysis and should be used to inform the network with additional data (e.g., organelle, evidence, confidence, function). Beyond visualization, the environment aims to support hypothesis generation e.g., assessing whether spatial proximity aligns with observed interaction patterns or pathway membership.
 
-Deliverables include a VR “project” (DataDiVR-compatible file/folder structure), a fully reproducible Python pipeline (PEP 8 notebooks/scripts; Python ≥ 3.9.1), a documented git repository (template and example notebooks provided), and a final report (Introduction, Materials/Methods, Results, Discussion). 
+Deliverables include a VR “project” (DataDiVR-compatible file/folder structure), a fully reproducible Python pipeline (e.g. PEP 8 conform notebooks/scripts; Python ≥ 3.9.1), a documented git repository (template and example notebooks provided), and a final report (Introduction, Materials/Methods, Results, Discussion). 
 
 MencheLab members will support data interpretation and domain questions throughout the semester. 
 This project is suitable for 2-3 students. It will be supervised by the individual domain experts in the Menchelab 
