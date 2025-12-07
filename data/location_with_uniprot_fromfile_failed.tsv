@@ -1,0 +1,349 @@
+protein	location	source(s)	uniprot_id
+H3C15	Nucleoplasm	HPA	
+SSX4B	Nucleoplasm	HPA	
+GAGE12D	Cytosol	HPA	
+H2AC19	Nucleoplasm	HPA	
+ENSG00000280571	Cytosol	HPA	
+FAM102A	Cytosol	HPA	
+C12orf40	Cytosol	HPA	
+H2AC15	Nucleoplasm	HPA	
+ENSG00000288000	Microtubules	HPA	
+LINC02203	Centrosome	HPA	
+H2AC16	Nucleoplasm	HPA	
+ENSG00000250264	Endoplasmic reticulum	HPA	
+ENSG00000269825	Nucleoli	HPA	
+TP53TG3E	Centrosome	HPA	
+TGIF2-RAB5IF	Mitochondria	HPA	
+ENSG00000289258	Nucleoplasm	HPA	
+ENSG00000251537	Plasma membrane	HPA	
+ENSG00000276345	Mitochondria	HPA	
+SLC9A3R1	Plasma membrane	HPA	
+C17orf80	Mitochondria	HPA	
+ENSG00000274944	Mitochondria	HPA	
+HSFY2	Nucleoplasm	HPA	
+ENSG00000291316	Nucleoplasm	HPA	
+C4orf19	Nucleoplasm	HPA	
+HSFX2	Cytosol	HPA	
+SPATA5	Cytosol	HPA	
+C14orf28	Cytosol	HPA	
+SLC22A18	Plasma membrane	HPA;GO	
+ENSG00000269035	Nucleoplasm	HPA	
+ENSG00000273217	Cytosol	HPA	
+C1orf131	Nucleoplasm	GO	
+ENSG00000255639	Nucleoplasm	HPA	
+ENSG00000244255	Plasma membrane	HPA	
+ENSG00000283765	Mitochondria	HPA	
+DEFB4A	Golgi apparatus	GO	
+ENSG00000289258	Cytosol	HPA	
+C1orf100	Cytosol	HPA	
+GAGE12C	Golgi apparatus	HPA	
+C4orf3	Endoplasmic reticulum	HPA	
+ENSG00000288000	Nucleoplasm	HPA	
+GAGE12D	Plasma membrane	HPA	
+ENSG00000262660	Mitochondria	HPA	
+TP53TG3F	Centrosome	HPA	
+ENSG00000244255	Endoplasmic reticulum	HPA	
+C3orf56	Nucleoplasm	HPA	
+ENSG00000265118	Golgi apparatus	HPA	
+ENSG00000269035	Cytosol	HPA	
+C2orf50	Cytosol	HPA	
+IGBP1P2	Primary cilium	HPA	
+ENSG00000187186	Endoplasmic reticulum	HPA	
+FAM90A11P	Nucleoplasm	HPA	
+HSFX1	Cytosol	HPA	
+H2AC17	Nucleoplasm	HPA	
+ENSG00000285837	Centrosome	HPA	
+C9orf24	Nucleoplasm	HPA	
+C3orf14	Plasma membrane	HPA	
+THEG	Cytosol	HPA	
+ENSG00000280571	Primary cilium	HPA	
+ENSG00000285130	Nucleoplasm	HPA	
+H2BC8	Cytosol	HPA	
+ENSG00000286268	Nuclear membrane	HPA	
+C3orf56	Cytosol	HPA	
+H3C14	Nucleoplasm	HPA	
+FAM90A5P	Nucleoli	HPA	
+ENSG00000255439	Endoplasmic reticulum	HPA	
+N6AMT1	Nucleoplasm	HPA	
+ENSG00000256500	Nucleoplasm	HPA	
+XAGE1A	Nucleoplasm	HPA	
+C12orf73	Mitochondria	HPA	
+C3orf56	Centrosome	HPA	
+TRIM49D2	Nucleoplasm	HPA	
+C10orf71	Nucleoplasm	HPA	
+ENSG00000272822	Nucleoplasm	HPA	
+TTC30B	Centrosome	HPA	
+KIAA2026	Nucleoplasm	HPA	
+PPP1R32	Nucleoplasm	HPA	
+ENSG00000198211	Microtubules	HPA	
+ENSG00000254706	Nucleoplasm	HPA	
+SMIM4	Nucleoplasm	HPA	
+H3C3	Nucleoplasm	HPA	
+TMEM251	Golgi apparatus	HPA	
+ENSG00000272772	Primary cilium	HPA	
+C4orf19	Plasma membrane	HPA	
+ENSG00000269026	Nucleoplasm	HPA	
+C20orf27	Nucleoplasm	HPA	
+GAGE12C	Cytosol	HPA	
+C3orf14	Cytosol	HPA	
+ENSG00000275740	Nucleoplasm	HPA	
+C1orf112	Nucleoli	HPA	
+ENSG00000261832	Nucleoplasm	HPA	
+N6AMT1	Centrosome	HPA	
+TRIM49D2	Cytosol	HPA	
+TEX37	Cytosol	HPA	
+ENSG00000283149	Endoplasmic reticulum	HPA	
+ENSG00000282278	Nucleoplasm	HPA	
+SOGA1	Nucleoli	HPA	
+SSX4B	Nucleoli	HPA	
+ENSG00000285188	Primary cilium	HPA	
+ENSG00000286112	Cytosol	HPA	
+ENSG00000268643	Nucleoplasm	HPA	
+ENSG00000285526	Nucleoplasm	HPA	
+ENSG00000288684	Cytosol	HPA	
+C20orf27	Cytosol	HPA	
+C12orf4	Nucleoplasm	HPA	
+C2orf50	Primary cilium	GO	
+ENSG00000255835	Nucleoplasm	HPA	
+ENSG00000283782	Nucleoplasm	HPA	
+ENSG00000285283	Endoplasmic reticulum	HPA	
+ENSG00000254692	Golgi apparatus	HPA	
+SPATA5L1	Nucleoplasm	HPA	
+FAM172A	Nucleoplasm	HPA	
+HSFY2	Cytosol	HPA	
+ENSG00000285749	Nucleoli	HPA	
+ENSG00000269590	Endoplasmic reticulum	HPA	
+FMC1-LUC7L2	Nucleoplasm	HPA	
+USP17L24	Nucleoli	GO	
+ENSG00000284779	Nucleoplasm	HPA	
+NXF2	Nucleoplasm	GO	
+TTC30A	Nucleoplasm	HPA	
+ENSG00000286235	Nucleoplasm	HPA	
+ENSG00000111780	Mitochondria	HPA	
+ENSG00000269547	Mitochondria	HPA	
+C18orf25	Nucleoplasm	HPA	
+H2AC13	Nucleoplasm	HPA	
+TTC30B	Primary cilium	HPA	
+GAGE12C	Plasma membrane	HPA	
+H3C10	Nucleoplasm	HPA	
+ENSG00000260342	Endoplasmic reticulum	HPA	
+H2BC7	Nucleoplasm	HPA	
+ENSG00000258472	Nucleoplasm	HPA	
+ENSG00000284292	Cytosol	HPA	
+FAM90A12P	Nucleoplasm	HPA	
+C1orf35	Nucleoplasm	HPA	
+C5orf15	Golgi apparatus	HPA	
+C11orf1	Nucleoplasm	HPA	
+NXF2	Cytosol	GO	
+HSFY1	Nucleoplasm	HPA	
+SPATA5L1	Nucleoli	HPA	
+ENSG00000267740	Mitochondria	HPA	
+ENSG00000256349	Microtubules	HPA	
+ENSG00000288520	Nucleoplasm	HPA	
+ZBED9	Golgi apparatus	HPA	
+FAM90A20P	Nucleoplasm	HPA	
+FAM104A	Nucleoplasm	HPA	
+SPANXA1	Nucleoplasm	HPA	
+ENSG00000288684	Plasma membrane	HPA	
+C9orf24	Cytosol	HPA	
+TTC30A	Centrosome	HPA	
+C1orf68	Cytosol	HPA	
+ADAL	Nucleoplasm	HPA	
+ENSG00000173867	Microtubules	HPA	
+FAM90A11P	Nucleoli	HPA	
+H2BC7	Cytosol	HPA	
+C1orf35	Cytosol	HPA	
+H3C11	Nucleoplasm	HPA	
+N6AMT1	Cytosol	GO	
+ENSG00000256500	Cytosol	HPA	
+BVES	Plasma membrane	HPA;GO	
+HSFY1	Cytosol	HPA	
+ENSG00000285920	Nucleoplasm	HPA	
+SOGA1	Cytosol	HPA	
+H2AC18	Nucleoplasm	HPA	
+CCDC153	Cytosol	HPA	
+SSX4	Nucleoplasm	HPA	
+ENSG00000288520	Cytosol	HPA	
+FAM205A	Nucleoli	HPA	
+ENSG00000274944	Nucleoplasm	HPA	
+RNF165	Nucleoplasm	HPA	
+C19orf54	Centrosome	HPA	
+KIAA2026	Cytosol	HPA	
+ENSG00000264668	Nucleoplasm	HPA	
+ENSG00000285982	Mitochondria	HPA	
+PPP1R32	Cytosol	HPA	
+ENSG00000265118	Cytosol	HPA	
+ENSG00000289346	Nucleoplasm	HPA	
+ENSG00000288520	Nucleoli	HPA	
+ENSG00000285458	Actin filaments	HPA	
+ENSG00000251569	Cytosol	HPA	
+ENSG00000285947	Nucleoplasm	HPA	
+ENSG00000260836	Cytosol	HPA	
+ENSG00000284292	Plasma membrane	HPA	
+ZBED9	Nucleoplasm	HPA	
+TMEM251	Plasma membrane	HPA	
+ENSG00000173867	Nucleoplasm	HPA	
+ENSG00000260836	Nucleoli	HPA	
+RBMY1J	Nucleoplasm	HPA	
+XAGE1B	Nucleoplasm	HPA	
+ENSG00000285920	Nucleoli	HPA	
+H3C4	Nucleoplasm	HPA	
+ENSG00000285547	Nucleoplasm	HPA	
+ENSG00000225528	Nucleoplasm	HPA	
+SSX4	Nucleoli	HPA	
+ENSG00000276345	Nucleoli	HPA	
+C1orf68	Plasma membrane	HPA	
+ENSG00000285947	Cytosol	HPA	
+ENSG00000268643	Cytosol	HPA	
+H2BC4	Nucleoplasm	HPA	
+ENSG00000285130	Plasma membrane	HPA	
+H3C7	Nucleoplasm	HPA	
+H2AB2	Nucleoplasm	GO	
+C1orf35	Plasma membrane	HPA	
+FAM205A	Plasma membrane	HPA	
+FAM90A24P	Nucleoplasm	HPA	
+ENSG00000255835	Cytosol	HPA	
+FAM90A13P	Nucleoplasm	HPA	
+ENSG00000256500	Plasma membrane	HPA	
+FAM90A15P	Nucleoplasm	HPA	
+ENSG00000283886	Nucleoplasm	HPA	
+FAM172A	Cytosol	HPA	
+H2AC8	Nucleoplasm	HPA	
+ENSG00000288520	Plasma membrane	HPA	
+ENSG00000285304	Cytosol	HPA	
+ZBED9	Nucleoli	HPA	
+MAGEA9	Golgi apparatus	HPA	
+ENSG00000284057	Nucleoplasm	HPA	
+ENSG00000290317	Golgi apparatus	HPA	
+ENSG00000272772	Nucleoplasm	HPA	
+H2BC4	Cytosol	HPA	
+ENSG00000289700	Nucleoplasm	HPA	
+ENSG00000197991	Microtubules	HPA	
+H3C8	Nucleoplasm	HPA	
+PPP1R32	Plasma membrane	HPA	
+ENSG00000286235	Cytosol	HPA	
+ENSG00000265118	Plasma membrane	HPA	
+H2BC10	Nucleoplasm	HPA;GO	
+ENSG00000272980	Centrosome	HPA	
+C9orf131	Mitochondria	HPA	
+C18orf25	Cytosol	HPA	
+IGBP1P2	Microtubules	HPA	
+C4orf48	Cytosol	HPA	
+H2BC6	Nucleoplasm	HPA	
+DEFA1	Golgi apparatus	GO	
+CLCA3P	Plasma membrane	GO	
+ENSG00000283886	Cytosol	HPA	
+ENSG00000284057	Cytosol	HPA	
+FAM90A24P	Nucleoli	HPA	
+SSX2B	Nucleoplasm	HPA	
+FAM90A13P	Nucleoli	HPA	
+RNF165	Plasma membrane	HPA	
+FAM90A15P	Nucleoli	HPA	
+ENSG00000289700	Cytosol	HPA	
+C12orf40	Golgi apparatus	HPA	
+ENSG00000289258	Actin filaments	HPA	
+ENSG00000260836	Endoplasmic reticulum	HPA	
+ENSG00000265118	Primary cilium	HPA	
+METTL7B	Microtubules	HPA	
+ENSG00000251569	Primary cilium	HPA	
+FAM90A12P	Nucleoli	HPA	
+ENSG00000285947	Plasma membrane	HPA	
+ENSG00000255639	Mitochondria	HPA	
+FAM90A3P	Nucleoplasm	HPA	
+FAM104A	Cytosol	HPA	
+TMEM199	Endoplasmic reticulum	GO	
+ENSG00000285526	Plasma membrane	HPA	
+C17orf97	Cytosol	HPA	
+C12orf73	Centrosome	HPA	
+KIAA1522	Nucleoplasm	HPA	
+ENSG00000250424	Plasma membrane	HPA	
+MAGEA9	Nucleoplasm	HPA	
+ENSG00000290317	Nucleoplasm	HPA	
+FAM90A20P	Nucleoli	HPA	
+ENSG00000241690	Plasma membrane	HPA	
+MRPS36	Mitochondria	HPA	
+C6orf226	Nucleoplasm	HPA	
+C17orf97	Nucleoli	HPA	
+H2AC4	Nucleoplasm	HPA	
+CCDC115	Plasma membrane	HPA	
+C19orf54	Intermediate filaments	HPA	
+ENSG00000257390	Nucleoplasm	HPA	
+ENSG00000286165	Cytosol	HPA	
+SSX2B	Nucleoli	HPA	
+C17orf80	Cytosol	HPA	
+ENSG00000280571	Nucleoplasm	HPA	
+H3C6	Nucleoplasm	HPA	
+ENSG00000198211	Primary cilium	HPA	
+ENSG00000286268	Endoplasmic reticulum	HPA	
+PRPF4B	Nucleoplasm	HPA	
+ENSG00000289027	Endoplasmic reticulum	HPA	
+ENSG00000285188	Microtubules	HPA	
+ENSG00000258529	Endoplasmic reticulum	HPA	
+ENSG00000258472	Plasma membrane	HPA	
+H3C1	Nucleoplasm	HPA;GO	
+ENSG00000269590	Nuclear membrane	HPA	
+ENSG00000264668	Nucleoli	HPA	
+CCDC103	Cytosol	HPA	
+OR4M2-OT1	Centrosome	HPA	
+C2orf50	Golgi apparatus	HPA	
+C19orf33	Nucleoplasm	HPA	
+TTC30A	Primary cilium	HPA	
+C12orf73	Plasma membrane	HPA	
+ENSG00000285827	Mitochondria	HPA	
+ENSG00000285547	Cytosol	HPA	
+H3C12	Nucleoplasm	HPA	
+C10orf71	Mitochondria	HPA	
+ENSG00000187186	Nucleoli	HPA	
+ENSG00000280571	Centrosome	HPA	
+SMIM4	Mitochondria	HPA	
+RBMY1J	Nucleoli	HPA	
+SMIM6	Nucleoplasm	HPA	
+H2AC11	Nucleoplasm	HPA	
+H4C16	Nucleoplasm	HPA	
+ENSG00000225528	Nucleoli	HPA	
+ENSG00000282218	Golgi apparatus	HPA	
+C1orf100	Nucleoplasm	HPA	
+GAGE12D	Golgi apparatus	HPA	
+ENSG00000288637	Centrosome	HPA	
+ENSG00000272772	Cytosol	HPA	
+KIAA1522	Plasma membrane	HPA	
+ENSG00000290315	Cytosol	HPA	
+ENSG00000264668	Plasma membrane	HPA	
+H2BC10	Cytosol	HPA	
+ENSG00000260914	Microtubules	HPA	
+H2BC6	Cytosol	HPA	
+ENSG00000144785	Nucleoplasm	HPA	
+FAM90A5P	Nucleoplasm	HPA	
+ENSG00000285982	Nucleoplasm	HPA	
+ENSG00000273217	Centrosome	HPA	
+C11orf80	Centrosome	HPA	
+ENSG00000285188	Cytosol	HPA	
+H3C2	Nucleoplasm	HPA	
+SOGA3	Nucleoplasm	HPA	
+ENSG00000285625	Cytosol	HPA	
+H2BC8	Nucleoplasm	HPA	
+ENSG00000251537	Cytosol	HPA	
+ENSG00000282988	Nucleoplasm	HPA	
+C9orf64	Golgi apparatus	HPA	
+ENSG00000285188	Centrosome	HPA	
+H4C1	Nucleoplasm	GO	
+C6orf58	Nucleoplasm	HPA	
+ENSG00000269035	Nuclear membrane	HPA	
+ENSG00000285458	Cytosol	HPA	
+TTC30B	Nucleoplasm	HPA	
+FAM102B	Cytosol	HPA	
+CCDC115	Endoplasmic reticulum	GO	
+SOGA3	Cytosol	HPA	
+ZBED8	Nucleoplasm	HPA	
+FAM90A3P	Nucleoli	HPA	
+ENSG00000144785	Centrosome	HPA	
+C1orf112	Nucleoplasm	HPA	
+FAM102B	Nucleoli	HPA	
+ENSG00000285708	Nucleoplasm	HPA	
+ENSG00000272980	Primary cilium	HPA	
+ENSG00000277535	Nucleoli	HPA	
+ENSG00000256514	Centrosome	HPA	
+ENSG00000257390	Cytosol	HPA	
+ENSG00000275869	Centrosome	HPA	
+C6orf58	Cytosol	HPA	
+H3C13	Nucleoplasm	HPA;GO	
