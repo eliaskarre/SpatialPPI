@@ -196,168 +196,171 @@ class CellModel:
 
 from whole_cell_spatial_graph import whole_cell_G, loc_to_proteins 
 # -> where should the Graph come from?
+# !!!!!!!!
 
-cell = CellModel(whole_cell_G)
+if __name__ == "__main__":
 
-#Define Locations
-'''
-cytosol = Location(
-    name="Cytosol",
-    node_ids=loc_to_proteins["Cytosol"],
-    center=(50.0, 0.0, 0.0),
-    radius=(9, 2, 1),
-    geometry=project_to_sphere
-)
+    cell = CellModel(whole_cell_G)
 
-centrosome = Location(
-    name="Centrosome",
-    node_ids=loc_to_proteins["Centrosome"],
-    center=(100.0, 0.0, 0.0),
-    radius=4.0,
-    geometry=project_to_sphere
-)
+    #Define Locations
+    '''
+    cytosol = Location(
+        name="Cytosol",
+        node_ids=loc_to_proteins["Cytosol"],
+        center=(50.0, 0.0, 0.0),
+        radius=(9, 2, 1),
+        geometry=project_to_sphere
+    )
 
-endoplasmicreticulum = Location(
-    name="Endoplasmic reticulum",
-    node_ids=loc_to_proteins["Endoplasmic reticulum"],
-    center=(0.0, 50.0, 0.0),
-    radius=20.0,
-    geometry=project_to_sphere
-)
+    centrosome = Location(
+        name="Centrosome",
+        node_ids=loc_to_proteins["Centrosome"],
+        center=(100.0, 0.0, 0.0),
+        radius=4.0,
+        geometry=project_to_sphere
+    )
 
-golgiapparatus = Location(
-    name="Golgi apparatus",
-    node_ids=loc_to_proteins["Golgi apparatus"],
-    center=(50.0, 50.0, 0.0),
-    radius=10.0,
-    geometry=project_to_sphere
-)
+    endoplasmicreticulum = Location(
+        name="Endoplasmic reticulum",
+        node_ids=loc_to_proteins["Endoplasmic reticulum"],
+        center=(0.0, 50.0, 0.0),
+        radius=20.0,
+        geometry=project_to_sphere
+    )
 
-intermediatefilaments = Location(
-    name="intermediatefilaments",
-    node_ids=loc_to_proteins["Intermediate filaments"],
-    center=(50.0, 50.0, 50.0),
-    radius=4.0,
-    geometry=project_to_sphere
-)
+    golgiapparatus = Location(
+        name="Golgi apparatus",
+        node_ids=loc_to_proteins["Golgi apparatus"],
+        center=(50.0, 50.0, 0.0),
+        radius=10.0,
+        geometry=project_to_sphere
+    )
 
-microtubules = Location(
-    name="Microtubules",
-    node_ids=loc_to_proteins["Microtubules"],
-    center=(50.0, 50.0, 100.0),
-    radius=(50, 50, 50),
-    geometry=project_to_sphere
-)
+    intermediatefilaments = Location(
+        name="intermediatefilaments",
+        node_ids=loc_to_proteins["Intermediate filaments"],
+        center=(50.0, 50.0, 50.0),
+        radius=4.0,
+        geometry=project_to_sphere
+    )
 
-nuclearmembrane = Location(
-    name="Nuclear membrane",
-    node_ids=loc_to_proteins["Nuclear membrane"],
-    center=(150.0, 150.0, 150.0),
-    radius=1.0,
-    geometry=project_to_sphere
-)
+    microtubules = Location(
+        name="Microtubules",
+        node_ids=loc_to_proteins["Microtubules"],
+        center=(50.0, 50.0, 100.0),
+        radius=(50, 50, 50),
+        geometry=project_to_sphere
+    )
 
-plasmamembrane = Location(
-    name="Plasma membrane",
-    node_ids=loc_to_proteins["Plasma membrane"],
-    center=(0.0, 0.0, 0.0),
-    radius=900.0,
-    geometry=project_to_sphere_surface
-)
+    nuclearmembrane = Location(
+        name="Nuclear membrane",
+        node_ids=loc_to_proteins["Nuclear membrane"],
+        center=(150.0, 150.0, 150.0),
+        radius=1.0,
+        geometry=project_to_sphere
+    )
 
-
-actinfilaments = Location(
-    name="Actin filaments",
-    node_ids=loc_to_proteins["Actin filaments"],
-    center=(0.0, 0.0, 0.0),
-    radius=500.0,
-    geometry=sample_sphere_surface_projection
-)
-
-nucleoplasm = Location(
-    name="Nucleoplasm",
-    node_ids=loc_to_proteins["Nucleoplasm"],
-    center=(0, 0, 0),
-    radius=9.0,
-    geometry=sample_ellipsoid_volume_projection,
-    constraint=SphereConstraint(radius=5.0, wall=5000)
-
-)
-
-'''
-mitochondria = Location(
-    name="Mitochondria",
-    node_ids=loc_to_proteins["Mitochondria"],
-    min_degree=0,
-    center=(0.0, 20.0, 0.0),
-    constraint=CylinderConstraint(radius=3, height=10, wall=5000)
-)
-
-primarycilium = Location(
-    name="Primary cilium",
-    node_ids=loc_to_proteins["Primary cilium"],
-    min_degree=1,
-    center=(0.0, 0.0, 0.0),
-    constraint=ShellConstraint(inner_radius=5.1, outer_radius=5.3, wall=5000)
-)
+    plasmamembrane = Location(
+        name="Plasma membrane",
+        node_ids=loc_to_proteins["Plasma membrane"],
+        center=(0.0, 0.0, 0.0),
+        radius=900.0,
+        geometry=project_to_sphere_surface
+    )
 
 
-nucleoli = Location(
-    name="Nucleoli",
-    node_ids=loc_to_proteins["Nucleoli"],
-    min_degree=1,
-    center=(0.0, 0.0, 0.0),
-    constraint=SphereConstraint(radius=5.0, wall=5000)
-)
+    actinfilaments = Location(
+        name="Actin filaments",
+        node_ids=loc_to_proteins["Actin filaments"],
+        center=(0.0, 0.0, 0.0),
+        radius=500.0,
+        geometry=sample_sphere_surface_projection
+    )
 
-#Add locations to cell
-'''
-cell.add_location(cytosol)
-cell.add_location(centrosome)
-cell.add_location(actinfilaments)
-cell.add_location(endoplasmicreticulum)
-cell.add_location(golgiapparatus)
-cell.add_location(intermediatefilaments)
-cell.add_location(microtubules)
-cell.add_location(mitochondria)
-cell.add_location(nuclearmembrane)
-cell.add_location(nucleoli)
-cell.add_location(actinfilaments)
-cell.add_location(primarycilium)
-cell.add_location(nucleoli)
-cell.add_location(nucleoplasm)
-'''
-#cell.add_location(primarycilium)
-cell.add_location(mitochondria)
-#cell.add_location(nucleoli)
+    nucleoplasm = Location(
+        name="Nucleoplasm",
+        node_ids=loc_to_proteins["Nucleoplasm"],
+        center=(0, 0, 0),
+        radius=9.0,
+        geometry=sample_ellipsoid_volume_projection,
+        constraint=SphereConstraint(radius=5.0, wall=5000)
 
-print(cell.summary()) #prints a summary of all locations
+    )
 
-cell.assign_all_positions() #assigns 3D coordinates to locations
+    '''
+    mitochondria = Location(
+        name="Mitochondria",
+        node_ids=loc_to_proteins["Mitochondria"],
+        min_degree=0,
+        center=(0.0, 20.0, 0.0),
+        constraint=CylinderConstraint(radius=3, height=10, wall=5000)
+    )
 
-#print(primarycilium.pos3d)
+    primarycilium = Location(
+        name="Primary cilium",
+        node_ids=loc_to_proteins["Primary cilium"],
+        min_degree=1,
+        center=(0.0, 0.0, 0.0),
+        constraint=ShellConstraint(inner_radius=5.1, outer_radius=5.3, wall=5000)
+    )
 
-'''
-from constraint_layout_classes import *
 
-test_subgraph = mitochondria.make_subgraph(whole_cell_G)
+    nucleoli = Location(
+        name="Nucleoli",
+        node_ids=loc_to_proteins["Nucleoli"],
+        min_degree=1,
+        center=(0.0, 0.0, 0.0),
+        constraint=SphereConstraint(radius=5.0, wall=5000)
+    )
 
-constraint = SphereConstraint(radius=5.0, wall=5000)
-pos = spring_layout_3d_constrained(test_subgraph, constraint, seed=7, iterations=450)
-print(pos)
-plot_layout_3d(test_subgraph, pos, extra_traces=constraint.boundary_traces(), title="Mitochondria").show()
-'''
+    #Add locations to cell
+    '''
+    cell.add_location(cytosol)
+    cell.add_location(centrosome)
+    cell.add_location(actinfilaments)
+    cell.add_location(endoplasmicreticulum)
+    cell.add_location(golgiapparatus)
+    cell.add_location(intermediatefilaments)
+    cell.add_location(microtubules)
+    cell.add_location(mitochondria)
+    cell.add_location(nuclearmembrane)
+    cell.add_location(nucleoli)
+    cell.add_location(actinfilaments)
+    cell.add_location(primarycilium)
+    cell.add_location(nucleoli)
+    cell.add_location(nucleoplasm)
+    '''
+    #cell.add_location(primarycilium)
+    cell.add_location(mitochondria)
+    #cell.add_location(nucleoli)
 
-#Print Edge list of whole_cell_graph in cell
-'''
-edge_nodes_with_attrs = [
-    ((u, dict(cell.whole_cell_graph.nodes[u])), (v, dict(cell.whole_cell_graph.nodes[v])))
-    for u, v in cell.whole_cell_graph.edges()
-]
+    print(cell.summary()) #prints a summary of all locations
 
-for pair in edge_nodes_with_attrs[:10]:
-    #print(pair)
-    continue
-'''
-#Plot 
-cell.plot_all_locations_3d("3D cell - all locations with edges")
+    cell.assign_all_positions() #assigns 3D coordinates to locations
+
+    #print(primarycilium.pos3d)
+
+    '''
+    from constraint_layout_classes import *
+
+    test_subgraph = mitochondria.make_subgraph(whole_cell_G)
+
+    constraint = SphereConstraint(radius=5.0, wall=5000)
+    pos = spring_layout_3d_constrained(test_subgraph, constraint, seed=7, iterations=450)
+    print(pos)
+    plot_layout_3d(test_subgraph, pos, extra_traces=constraint.boundary_traces(), title="Mitochondria").show()
+    '''
+
+    #Print Edge list of whole_cell_graph in cell
+    '''
+    edge_nodes_with_attrs = [
+        ((u, dict(cell.whole_cell_graph.nodes[u])), (v, dict(cell.whole_cell_graph.nodes[v])))
+        for u, v in cell.whole_cell_graph.edges()
+    ]
+
+    for pair in edge_nodes_with_attrs[:10]:
+        #print(pair)
+        continue
+    '''
+    #Plot 
+    cell.plot_all_locations_3d("3D cell - all locations with edges")

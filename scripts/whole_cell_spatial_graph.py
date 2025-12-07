@@ -77,32 +77,37 @@ for node in nodes_with_loc:
          continue
 
 
-'''
-#Print-Loop for all nodes and its attributes of the Network
 
-for node, attrs in G.nodes(data=True):
-    print(node, attrs)
-'''
 
-'''
-#Print-Loop for all nodes and its attributes of a Subnetwork "Cytosol"
 
-for node, attrs in location_subgraphs["Cytosol"].nodes(data=True):
-    print(node, attrs)
-'''
 
-#edge list with locations
+if __name__ == "__main__":
+    '''
+    #Print-Loop for all nodes and its attributes of the Network
 
-edge_nodes_with_attrs = [
-    ((u, dict(whole_cell_G.nodes[u])), (v, dict(whole_cell_G.nodes[v])))
-    for u, v in whole_cell_G.edges()
-]
+    for node, attrs in G.nodes(data=True):
+        print(node, attrs)
+    '''
 
-for pair in edge_nodes_with_attrs[:50]:
-    #print(pair)
-    continue
+    '''
+    #Print-Loop for all nodes and its attributes of a Subnetwork "Cytosol"
 
-#print(len(edge_nodes_with_attrs))
+    for node, attrs in location_subgraphs["Cytosol"].nodes(data=True):
+        print(node, attrs)
+    '''
 
-#print(G.nodes["Q9BUF5"]["locations"]["Microtubules"]) #Acess coordinates of a Node/Protein
-#print(nx.get_node_attributes(G, "locations").keys())
+    #edge list with locations
+
+    edge_nodes_with_attrs = [
+        ((u, dict(whole_cell_G.nodes[u])), (v, dict(whole_cell_G.nodes[v])))
+        for u, v in whole_cell_G.edges()
+    ]
+
+    for pair in edge_nodes_with_attrs[:50]:
+        #print(pair)
+        continue
+
+    #print(len(edge_nodes_with_attrs))
+
+    #print(G.nodes["Q9BUF5"]["locations"]["Microtubules"]) #Acess coordinates of a Node/Protein
+    #print(nx.get_node_attributes(G, "locations").keys())

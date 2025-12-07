@@ -470,26 +470,27 @@ def plot_layout_3d(G, pos, extra_traces=None, title="3D constrained spring layou
     return fig
 """
 
+if __name__ == "__main__":
+    
+    G = nx.barabasi_albert_graph(800, 2, seed=2)
 
-#G = nx.barabasi_albert_graph(800, 2, seed=2)
-
-#sphere = SphereConstraint(radius=5.0, wall=5000)
-#pos = spring_layout_3d_constrained(G, sphere, seed=7, iterations=400)
-#plot_layout_3d(G, pos, extra_traces=sphere.boundary_traces(), title="Sphere").show()
+    #sphere = SphereConstraint(radius=5.0, wall=5000)
+    #pos = spring_layout_3d_constrained(G, sphere, seed=7, iterations=400)
+    #plot_layout_3d(G, pos, extra_traces=sphere.boundary_traces(), title="Sphere").show()
 
 
-#cyl = CylinderConstraint(radius=3, height=10, wall=5000)
-#pos = spring_layout_3d_constrained(G, cyl, seed=7)
-#plot_layout_3d(G, pos, extra_traces=cyl.boundary_traces(), title="Cylinder").show()
+    #cyl = CylinderConstraint(radius=3, height=10, wall=5000)
+    #pos = spring_layout_3d_constrained(G, cyl, seed=7)
+    #plot_layout_3d(G, pos, extra_traces=cyl.boundary_traces(), title="Cylinder").show()
 
-#shell = ShellConstraint(inner_radius=1, outer_radius=1.2, wall=5000)
-#pos = spring_layout_3d_constrained(G, shell, seed=7, iterations=350)
-#plot_layout_3d(G, pos, extra_traces=shell.boundary_traces(), title="Shell").show()
+    #shell = ShellConstraint(inner_radius=1, outer_radius=1.2, wall=5000)
+    #pos = spring_layout_3d_constrained(G, shell, seed=7, iterations=350)
+    #plot_layout_3d(G, pos, extra_traces=shell.boundary_traces(), title="Shell").show()
 
-#ell = EllipsoidConstraint(axes=(6, 3, 10), wall=5000)
-#pos = spring_layout_3d_constrained(G, ell, seed=7, iterations=400)
-#plot_layout_3d(G, pos, extra_traces=ell.boundary_traces(), title="Ellipsoid").show()
+    #ell = EllipsoidConstraint(axes=(6, 3, 10), wall=5000)
+    #pos = spring_layout_3d_constrained(G, ell, seed=7, iterations=400)
+    #plot_layout_3d(G, pos, extra_traces=ell.boundary_traces(), title="Ellipsoid").show()
 
-#ell_shell = EllipsoidShellConstraint(axes=(10, 8, 8), outer=1.01, wall=500000)
-#pos = spring_layout_3d_constrained(G, ell_shell, seed=7)
-#plot_layout_3d(G, pos, extra_traces=ell_shell.boundary_traces(), title="Ellipsoid Shell").show()
+    #ell_shell = EllipsoidShellConstraint(axes=(10, 8, 8), outer=1.01, wall=500000)
+    #pos = spring_layout_3d_constrained(G, ell_shell, seed=7)
+    #plot_layout_3d(G, pos, extra_traces=ell_shell.boundary_traces(), title="Ellipsoid Shell").show()
