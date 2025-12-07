@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 
 from pathlib import Path
 
+import os
+print("CWD =", os.getcwd())
+
 # read PPI network
 ppi_path = "data/consensus_ppi_bioplex_biogrid_intact_huri_edgelist.tsv"
 
