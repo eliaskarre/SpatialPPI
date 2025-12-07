@@ -22,6 +22,7 @@ class SphereConstraint():
         length = rng.random(n) ** (1.0 / 3.0) #randomly select lengths for vectors between 0 and 1 -> volume. 1/3 for equal distribution in 3D  
 
         return directions * (length * self.radius)[:, None]
+        #(n,) -> [:, None] -> (n,1) 
         #-> multiply radius with lengths and directions
 
     def forces(self, q):
@@ -77,6 +78,7 @@ class ShellConstraint():
         #set length to be in intervall between inner and outer radius and shift everything by inner radius
         length = (self.inner_radius + rng.random(n) * (self.outer_radius - self.inner_radius))
         return directions * length[:, None]
+            #(n,) -> [:, None] -> (n,1) 
 
     def forces(self, q):
         rin = self.inner_radius
@@ -122,31 +124,55 @@ class CylinderConstraint():
         self.wall = float(wall)
 
     def sample(self, n, rng):
-        theta = rng.random(n) * 2*np.pi
-        r = self.radius * np.sqrt(rng.random(n))          # uniform in disk area
-        z = (rng.random(n) - 0.5) * self.height           # uniform in height
-        x = r * np.cos(theta)
-        y = r * np.sin(theta)
-        return np.column_stack([x, y, z])
+        #get random directions on unit circle in xy-plane
+        theta = rng.random(n) * 2 * np.pi #(n, )
+        #print(theta)
+
+        #create random radial 2D directions via theta -> only x and y
+        directions_xy = np.column_stack([np.cos(theta), np.sin(theta)]) 
+            # np.cos/sin(theta) creates 1D (n,) array
+            # column_stack glues these 1D array into columns -> (n,2)
+        
+        radial_length = np.full(n, self.radius)  #(n,) -> radial length array, where all entries = self.radius
+
+        xy = directions_xy * radial_length[:, None]  #(n,2)
+            #(n,) -> [:, None] -> (n,1) 
+
+        #get random z via height
+        z = rng.random(n) * self.height
+        
+        return np.column_stack([xy, z]) #glue x,y and z togehter in one (n,3) array
 
     def forces(self, q):
-        R = self.radius
-        half = 0.5 * self.height
+        radius = self.radius
+        half = 0.5 * self.height #distance from center to caps (z-coordinate)
+
+        #unpack each coordinate
         x, y, z = q[:, 0], q[:, 1], q[:, 2]
 
-        r = np.sqrt(x*x + y*y) + 1e-12
-        u_xy = np.column_stack([x/r, y/r, np.zeros_like(r)])  # "unit vector" on mantle
+        dist_radial = np.sqrt(x*x + y*y) + 1e-12
+            #shortest perpendicular radial distance to the z-axis + divison-protection
+            # length of a vector is sqr(x²+y²+z²) -> ignore z to know how far point is away from z-axis = radial distance
 
-        # --- wall forces (like sphere: excess * unit_direction) ---
-        excess_r = np.maximum(0.0, r - R)                     # outside mantle
-        F = -(2.0 * self.wall * excess_r)[:, None] * u_xy
+        #get normalized direction (length = 1 in xy plane) which points away from z-axis in the direction of the mantle of the cylinder
+        # only in xy-plane -> z = zero
+        direction_radial = np.column_stack([x/dist_radial, y/dist_radial, np.zeros_like(dist_radial)])
 
-        excess_z = np.maximum(0.0, np.abs(z) - half)          # outside caps
-        F[:, 2] += -(2.0 * self.wall * excess_z) * np.sign(z)
+        #wall forces
+        # outside mantle
+        excess_radial = np.maximum(0.0, dist_radial - radius)
+        F = -(self.wall * excess_radial)[:, None] * direction_radial
+
+        # outside caps
+        excess_z = np.maximum(0.0, np.abs(z) - half)         
+        F[:, 2] += -(self.wall * excess_z) * np.sign(z)
+            #F[:, 2] -> set force of z-coordinates
+            #determine direction of cap force via np.sign -> push up or down
 
         return F
 
     def boundary_traces(self):
+        #build 3 surfaces: Top cap, bottom cap and mantle
         R, H = self.radius, self.height
         half = H / 2.0
 
@@ -363,7 +389,7 @@ def spring_layout_3d_constrained(
             #avoid dist to be smaller then 0.01 -> no 0 divison
             #e.g. when i = j -> dist is 0
 
-        # Fruchterman-Reingold coefficients 
+        # Fruchterman-Reingold coefficients -> repulsion minus attraction
         # repulsion ~ k^2/dist^2
         # attraction ~ dist/k (only edges)
         
@@ -395,9 +421,9 @@ def spring_layout_3d_constrained(
     return {nodes[i]: pos[i] for i in range(n)}
 
 
-
+"""
 def plot_layout_3d(G, pos, extra_traces=None, title="3D constrained spring layout"):
-    """Plot only nodes + edges + boundaries (as extra_trace)"""
+    #Plot only nodes + edges + boundaries (as extra_trace)
     extra_traces = extra_traces or []
     nodes = list(G)
 
@@ -442,7 +468,7 @@ def plot_layout_3d(G, pos, extra_traces=None, title="3D constrained spring layou
         ),
     )
     return fig
-
+"""
 
 
 #G = nx.barabasi_albert_graph(800, 2, seed=2)
