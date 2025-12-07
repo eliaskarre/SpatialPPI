@@ -17,35 +17,37 @@ class Location:
     Attributes:
     - name:             "Nucleus", "Cytosol" ..
     - nodes:            List of Proteins (Node-IDs) in this location
+    - min_degree:       minimum number of degree per node
     - center:           3D coordinates of center (x, y, z)
-    - radius:           Size parameter
-    - sample_function:  3D coordinate sampling geometry
+    - constraint:       3D layout constrained by a certain shape
     """
 
     def __init__(
         self,
         name: str,
         node_ids: List[str],
+        min_degree: int,
         center: Tuple[float, float, float],
-        radius: float,
-        geometry: Callable,
         constraint: object
     ):
         self.name = name
         self.node_ids = node_ids
+        self.min_degree = min_degree
         self.center = center
-        self.radius = radius
-        self.pos3d = {}
-        self.geometry = geometry
         self.constraint = constraint
+
+        self.pos3d = {}
 
     #Subgraphs
 
     def make_subgraph(self, whole_graph: nx.Graph):
-        """Subgraph from big PPI graph for this location with a certain degree."""
+        """
+        Subgraph from big PPI graph for this location with nodes with certain minimum of degrees (min_degree)
+        """
+        
         nodes_here = [n for n in self.node_ids if n in whole_graph]
         sg = whole_graph.subgraph(nodes_here).copy()
-        sg.remove_nodes_from([n for n, d in sg.degree() if d < 1]) # <- adjust degree here
+        sg.remove_nodes_from([n for n, d in sg.degree() if d <= self.min_degree]) # <- adjust degree here
         return sg
 
     # Simple metrics on Subgraphs
@@ -58,43 +60,6 @@ class Location:
         H = self.make_subgraph(G)
         return H.number_of_edges()
     
-    """
-    def assign_positions_to_nodes(self, whole_graph: nx.Graph):
-        
-        #-Assigns all nodes of this location a (x,y,z) position (pos3D)
-        #-Saves them as Node Attributes in big whole-cell graph.
-        
-        H = self.make_subgraph(whole_graph)
-
-        layout = nx.spring_layout(H, dim=3, seed=42) #creates a force-directed layout: node_id -> np.array([x, y, z])
-        #print(layout)
-        
-        coords = np.array(list(layout.values())) #get only coordinates
-        center_layout = coords.mean(axis=0) #calculate middle point of coordinates
-
-        for node in H.nodes():
-            # Direction from Layout
-            v = np.array(layout[node]) - center_layout #vector from network center to this node
-            norm = np.linalg.norm(v) #length of vector
-            
-            if norm < 1e-9: #if vector too small, because point is too similar to middle-point: use fallback
-                v = np.array([1.0, 0.0, 0.0])  #simple vector (change?)
-
-            direction = v / np.linalg.norm(v) #Calculate Einheitsvector (lenght of 1): gives direction
-
-            #print(np.linalg.norm(direction))
-
-            #get point on surface by projecting direction
-            x, y, z = self.geometry(direction, self.center, self.radius)
-
-            #set Node attribute in big Graph
-            whole_graph.nodes[node]["locations"][self.name] = [x, y, z]
-
-            #save node coordinate in location positions
-            self.pos3d[node] = [x, y, z]
-        
-        print(self.pos3d)
-    """
 
     def assign_positions_to_nodes(self, whole_graph: nx.Graph):
         """
@@ -323,18 +288,16 @@ nucleoplasm = Location(
 mitochondria = Location(
     name="Mitochondria",
     node_ids=loc_to_proteins["Mitochondria"],
+    min_degree=0,
     center=(0.0, 20.0, 0.0),
-    radius=(0, 100, 0),
-    geometry=sample_ellipsoid_volume_projection,
-    constraint=EllipsoidConstraint(axes=(3.25, 3.25, 6.50), wall=5000)
+    constraint=CylinderConstraint(radius=3, height=10, wall=5000)
 )
 
 primarycilium = Location(
     name="Primary cilium",
     node_ids=loc_to_proteins["Primary cilium"],
+    min_degree=1,
     center=(0.0, 0.0, 0.0),
-    radius=250.0,
-    geometry=sample_sphere_surface_projection,
     constraint=ShellConstraint(inner_radius=5.1, outer_radius=5.3, wall=5000)
 )
 
@@ -342,9 +305,8 @@ primarycilium = Location(
 nucleoli = Location(
     name="Nucleoli",
     node_ids=loc_to_proteins["Nucleoli"],
+    min_degree=1,
     center=(0.0, 0.0, 0.0),
-    radius=9.0,
-    geometry=sample_ellipsoid_volume_projection,
     constraint=SphereConstraint(radius=5.0, wall=5000)
 )
 
@@ -365,9 +327,9 @@ cell.add_location(primarycilium)
 cell.add_location(nucleoli)
 cell.add_location(nucleoplasm)
 '''
-cell.add_location(primarycilium)
-#cell.add_location(mitochondria)
-cell.add_location(nucleoli)
+#cell.add_location(primarycilium)
+cell.add_location(mitochondria)
+#cell.add_location(nucleoli)
 
 print(cell.summary()) #prints a summary of all locations
 
