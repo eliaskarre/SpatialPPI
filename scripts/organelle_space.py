@@ -293,7 +293,7 @@ if __name__ == "__main__":
         node_ids=loc_to_proteins["Mitochondria"],
         min_degree=0,
         center=(0.0, 20.0, 0.0),
-        constraint=CylinderConstraint(radius=3, height=10, wall=5000)
+        constraint=EllipsoidShellConstraint(axes=(10, 8, 8), outer=1.01, wall=500000)
     )
 
     primarycilium = Location(

@@ -199,52 +199,56 @@ class CylinderConstraint():
         return [top, bot, side]
 
 class EllipsoidConstraint():
-    """
-    Solid Ellipsoid: (x/a)^2 + (y/b)^2 + (z/c)^2 <= 1
-
-    - sample(): uniform in ellipsoid volume via "unit ball sample" -> scale by axes
-    - forces(): soft wall in ellipsoid metric (only outside)
-    - boundary_traces(): plotly surface for the ellipsoid boundary
-    """
     def __init__(self, axes=(3.0, 5.0, 3.0), wall: float = 5000.0):
+        #Axes
+        a, b, c = float(axes[0]), float(axes[1]), float(axes[2])
+        self.axes = (a, b, c)
+        
         if len(axes) != 3:
             raise ValueError("axes must be a 3-tuple (a,b,c)")
-        a, b, c = float(axes[0]), float(axes[1]), float(axes[2])
         if a <= 0 or b <= 0 or c <= 0:
             raise ValueError("axes values must be > 0")
-        self.axes = (a, b, c)
+        
         self.wall = float(wall)
         self.scale = self.axes
 
     def sample(self, n, rng):
-        # uniform in unit ball
         directions = rng.normal(size=(n, 3))
         directions /= (np.linalg.norm(directions, axis=1, keepdims=True) + 1e-12)
-        length = rng.random(n) ** (1.0 / 3.0)
-        p = directions * length[:, None]  # in unit ball
+        length = rng.random(n)
+        points = directions * length[:, None]
 
         # scale into ellipsoid volume
         a, b, c = self.axes
-        p[:, 0] *= a
-        p[:, 1] *= b
-        p[:, 2] *= c
-        return p
+        points[:, 0] *= a
+        points[:, 1] *= b
+        points[:, 2] *= c
+        return points
 
     def forces(self, q):
         a, b, c = self.axes
         axes = np.array([a, b, c], dtype=float)
-        axes2 = axes * axes
 
-        # ellipsoid "distance" in scaled space: s = ||(x/a, y/b, z/c)||
-        p = q / axes[None, :]
-        s = np.linalg.norm(p, axis=1) + 1e-12
+        #scale points into unit sphere coordinate system for easy check, wether a point is inside or outside
+        # q_scaled = (x/a, y/b, z/c) -> transfrorms ellipsoid points into sphere points
+        # p (ellipsoid) -> p_scaled (unit sphere) 
+        q_scaled = q / axes[None, :]
+        
+        #get distance to center in unit sphere room for each point
+        dist_scaled = np.linalg.norm(q_scaled, axis=1) + 1e-12
+        
+             # dist_scaled > 1: point outside of ellipsoid
+             # dist_scaled < 1: point inside of ellipsoid
 
         # direction for pushing back inward in ORIGINAL coordinates:
-        # grad(s) w.r.t q is (q/axes^2)/s
-        directions = (q / axes2[None, :]) / s[:, None]
+        
+        axes2 = axes * axes
+        directions = (q / axes2[None, :]) / dist_scaled[:, None]
+            #q / axes^2 -> (x/a², y/b², z/c²): Weighted Direction pointing outside of ellipsoid -> long axes have less weigth (because there is more room) then short axes (small room until wall)
+            # (q / axes2[None, :]) / dist_scaled[:, None] -> normalize direction, so force and direction are separated
 
         # soft wall only outside (s>1)
-        excess = np.maximum(0.0, s - 1.0)
+        excess = np.maximum(0.0, dist_scaled - 1.0) #minus 1 to only meassure the outside part
         F = -(self.wall * excess)[:, None] * directions
         return F
 
@@ -260,62 +264,70 @@ class EllipsoidConstraint():
 
 class EllipsoidShellConstraint():
     """
-    Ellipsoid shell: 1 <= s <= outer, where s = ||(x/a, y/b, z/c)|| in scaled space.
     Equivalently: inner surface is the ellipsoid with axes (a,b,c),
                   outer surface is the ellipsoid with axes (outer*a, outer*b, outer*c).
-
-    - sample(): uniform in shell volume via unit-ball shell sample -> scale by axes
-    - forces(): soft walls at inner (s<1) and outer (s>outer)
     """
     def __init__(self, axes=(3.0, 5.0, 3.0), outer: float = 1.3, wall: float = 5000.0):
+        #Axes
+        a, b, c = float(axes[0]), float(axes[1]), float(axes[2])
+        self.axes = (a, b, c)
+        
         if len(axes) != 3:
             raise ValueError("axes must be a 3-tuple (a,b,c)")
-        a, b, c = float(axes[0]), float(axes[1]), float(axes[2])
         if a <= 0 or b <= 0 or c <= 0:
             raise ValueError("axes values must be > 0")
         outer = float(outer)
         if outer <= 1.0:
             raise ValueError("outer must be > 1.0 (shell thickness)")
-        self.axes = (a, b, c)
+        
         self.outer = outer
         self.wall = float(wall)
-        # useful for anything that wants a rough scale
         self.scale = (outer*a, outer*b, outer*c)
 
     def sample(self, n, rng):
-        # sample uniform in unit BALL SHELL: s in [1, outer] with volume-uniform radius
         directions = rng.normal(size=(n, 3))
         directions /= (np.linalg.norm(directions, axis=1, keepdims=True) + 1e-12)
 
-        inner3 = 1.0 ** 3
-        outer3 = self.outer ** 3
-        s = (inner3 + rng.random(n) * (outer3 - inner3)) ** (1.0 / 3.0)  # volume-uniform shell radius
+        inner = 1.0
+        length = (inner + rng.random(n) * (self.outer - inner)) #length only in shell intervall
 
-        p = directions * s[:, None]  # points in unit shell (scaled space)
+        points = directions * length[:, None]  # points in unit shell (scaled space)
 
         # scale into ellipsoid shell
         a, b, c = self.axes
-        p[:, 0] *= a
-        p[:, 1] *= b
-        p[:, 2] *= c
-        return p
+        points[:, 0] *= a
+        points[:, 1] *= b
+        points[:, 2] *= c
+        return points
 
     def forces(self, q):
         a, b, c = self.axes
         axes = np.array([a, b, c], dtype=float)
-        axes2 = axes * axes
 
         # scaled radius s = ||(x/a, y/b, z/c)||
-        p = q / axes[None, :]
-        s = np.linalg.norm(p, axis=1) + 1e-12
+   
+        #scale points into unit sphere coordinate system for easy check, wether a point is inside or outside
+        # q_scaled = (x/a, y/b, z/c) -> transfrorms ellipsoid points into sphere points
+        # p (ellipsoid) -> p_scaled (unit sphere) 
+        q_scaled = q / axes[None, :]
+        
+        #get distance to center in unit sphere room for each point
+        dist_scaled = np.linalg.norm(q_scaled, axis=1) + 1e-12
+        
+             # dist_scaled > 1: point outside of ellipsoid
+             # dist_scaled < 1: point inside of ellipsoid
 
-        # gradient direction in original coordinates: grad(s) = (q/axes^2)/s
-        directions = (q / axes2[None, :]) / s[:, None]
+        # direction for pushing back inward in ORIGINAL coordinates:
+        
+        axes2 = axes * axes
+        directions = (q / axes2[None, :]) / dist_scaled[:, None]
+            #q / axes^2 -> (x/a², y/b², z/c²): Weighted Direction pointing outside of ellipsoid -> long axes have less weigth (because there is more room) then short axes (small room until wall)
+            # (q / axes2[None, :]) / dist_scaled[:, None] -> normalize direction, so force and direction are separated
 
         # outer wall: s > outer -> push inward
-        excess_out = np.maximum(0.0, s - self.outer)
+        excess_out = np.maximum(0.0, dist_scaled - self.outer)
         # inner wall: s < 1 -> push outward
-        excess_in = np.maximum(0.0, 1.0 - s)
+        excess_in = np.maximum(0.0, 1.0 - dist_scaled)
 
         F = np.zeros_like(q)
         F += -(self.wall * excess_out)[:, None] * directions
@@ -362,23 +374,30 @@ def spring_layout_3d_constrained(
     rng = np.random.default_rng(seed) #reprodcueable random generator
     pos = constraint.sample(n, rng) #sample starting positions
 
-    # k automatisch an Container-Skala koppeln
+    # k = prefered distance between two nodes
+    # couple k to volume
     if k is None:
-        extent = np.ptp(pos, axis=0)              # (Lx, Ly, Lz)
-        extent = np.maximum(extent, 1e-6)         # avoid zeros
+        extent = np.ptp(pos, axis=0) # (Lx, Ly, Lz)
+        extent = np.maximum(extent, 1e-12) # avoid zeros
         bbox_vol = float(extent[0] * extent[1] * extent[2])
-        k = (bbox_vol / n) ** (1.0 / 3.0)         # ~typical spacing in 3D
+        k = (bbox_vol / n) ** (1.0 / 3.0) # 3rd square-root of cube = edge-length of cube
 
-        k *= 0.8
         print(k)
 
     #Temperature
-    t = np.ptp(pos, axis=0).max() * 0.1
-    t = 0.1 if t == 0 else t #at least 0.1
-    dt = t / (iterations + 1) #reduction of temperature per interation
+    #big steps in the beginning, small steps later for equilibrium
 
+    bounding_box = np.ptp(pos, axis=0) #peak-to-peak -> calculates the dimensions of a boundary quader (Lx, Ly, Lz), which holds exactly all points
+    t = bounding_box.max() * 0.1 # the temperature is the highest edge-length of that quader (either Lx, Ly or Lz)
+    # -> largest box-edge is a fast meassure for the scale-dimension of all points, so that layout and temperature match together
+    
+    dt = t / (iterations + 1) #delta reduction of temperature in each interation
+
+
+    #main loop
     for _ in range(iterations):
         #Create Matrix of all point combinations (n_i, n_j, 3) with direction vectors from i to j
+        #-> direction of force
         delta = pos[:, None, :] - pos[None, :, :]
         
         #Create Matrix of all point combinations (n_i, n_j, 3) with scalar distances from i to j
@@ -393,30 +412,42 @@ def spring_layout_3d_constrained(
         # repulsion ~ k^2/dist^2
         # attraction ~ dist/k (only edges)
         
-        # coeff is a n x n matrix of scalars, which determines for each point how strong they attract or repell
+        #coeff is a n x n matrix of scalars, which determines for each point how strong they attract or repell
+        #-> strength of force
         coeff = (repulsion_strength * (k * k) / (dist * dist)) - (edge_strength * A * dist / k)
         
-        # disp is for each node i the whole move-vector (force), which is calculated from all other nodes
+        # disp is for each node i the whole move-vector (force), which is calculated from all other pair-forces
         disp = np.einsum("ijk,ij->ik", delta, coeff)
+            #for each point i: 
+                #for each point j:
+                    #sum: direction delta[i, j] * strength coeff[i, j]
+            # -> sums all force-vectors j which act on a single node i
+            # Result: displacement vector of every node i (direction of change AND strength via length)
 
-        disp += constraint.forces(pos) # Constraint add force
+        disp += constraint.forces(pos) #Add constraint force-vector -> direction + strength from shape-constraint
 
-        length = np.linalg.norm(disp, axis=1)
-        length = np.clip(length, 0.01, None)
-        step = disp * (t / length)[:, None]
-        pos += step
+        #convert disp into a step infleunced by temperature optimization
+        disp_length = np.linalg.norm(disp, axis=1) #length of force vector (strength)
+        disp_length = np.clip(disp_length, 1e-12, None) #zero-division protection
+        
+        step = disp * (t / disp_length)[:, None] 
+            #strength of vectors in step is a fraction of temperature
+            #temperature is initialized by boundary box of initial sample() point cloud -> largest side of quader
+        
+        pos += step #add temperature corrected movement-vectors to positions -> shift
 
+        #prevent center drift -> recenter after each iteration
         if recenter_each_iter:
             pos -= pos.mean(axis=0)
 
-        t -= dt
+        t -= dt #lower temperature
         if (np.linalg.norm(step) / n) < threshold:
             break
 
     #print(type(pos), getattr(pos, "shape", None))
     #print(type(center), np.asarray(center).shape)   
     
-    pos += np.asarray(center, dtype=float)
+    pos += np.asarray(center, dtype=float) # add center shift for 3D placement relativ to other orgnaells
     
     return {nodes[i]: pos[i] for i in range(n)}
 
