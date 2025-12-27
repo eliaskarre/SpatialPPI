@@ -225,7 +225,7 @@ if __name__ == "__main__":
         min_degree=10,
         center=(0.0, 0.0, 0.0),
         # perinukleäres + zytoplasmatisches ER als Schale um den Kern (grobe Näherung)
-        constraint=ShellConstraint(inner_radius=4040.0, outer_radius=9000.0, wall=5000)
+        constraint=ShellConstraint(inner_radius=4040.0, outer_radius=5000.0, wall=5000)
     )
 
     golgiapparatus = Location(
@@ -251,7 +251,7 @@ if __name__ == "__main__":
     intermediatefilaments = Location(
         name="Intermediate filaments",
         node_ids=loc_to_proteins["Intermediate filaments"],
-        min_degree=10,
+        min_degree=0,
         center=(0.0, 0.0, 0.0),
         # IF-Netzwerk füllt typischerweise weite Teile des Zytoplasmas (hier knapp innerhalb der Membran)
         constraint=EllipsoidConstraint(axes=(9500.0, 7500.0, 7500.0), wall=5000)
@@ -260,7 +260,7 @@ if __name__ == "__main__":
     microtubules = Location(
         name="Microtubules",
         node_ids=loc_to_proteins["Microtubules"],
-        min_degree=10,
+        min_degree=0,
         # im ganzen Zytoplasma; spring layout + Kanten ziehen sie i.d.R. Richtung Centrosom
         center=(0.0, 0.0, 0.0),
         constraint=EllipsoidConstraint(axes=(9500.0, 7500.0, 7500.0), wall=5000)
@@ -321,7 +321,7 @@ if __name__ == "__main__":
         # Membran "oben" bei z≈8000; Cilium-Länge 5000 => Center bei 8000 + 2500
         center=(0.0, 0.0, 10500.0),
         # Ø ~0.25 µm => r ~125 nm; Länge ~5 µm => 5000 nm
-        constraint=CylinderConstraint(radius=125.0, height=5000.0, wall=5000)
+        constraint=CylinderConstraint(radius=125.0, height=1000.0, wall=5000)
     )
 
     nucleoli = Location(
@@ -331,7 +331,8 @@ if __name__ == "__main__":
         # innerhalb des Nucleoplasmas
         center=(900.0, 800.0, 200.0),
         # Beispiel: Ø 1.2 µm => r 600 nm
-        constraint=SphereConstraint(radius=600.0, wall=5000)
+        constraint=SphereConstraint(radius=600.0, wall=5000),
+        repulsion_strength = 2
     )
 
 
@@ -341,11 +342,11 @@ if __name__ == "__main__":
     #cell.add_location(cytosol)
     
     cell.add_location(centrosome)
-    cell.add_location(actinfilaments)
+    #cell.add_location(actinfilaments)
     cell.add_location(endoplasmicreticulum)
     cell.add_location(golgiapparatus)
-    cell.add_location(intermediatefilaments)
-    cell.add_location(microtubules)
+    #cell.add_location(intermediatefilaments)
+    #cell.add_location(microtubules)
     cell.add_location(nuclearmembrane)
     cell.add_location(nucleoli)
     cell.add_location(plasmamembrane)
