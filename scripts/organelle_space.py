@@ -28,13 +28,15 @@ class Location:
         node_ids: List[str],
         min_degree: int,
         center: Tuple[float, float, float],
-        constraint: object
+        constraint: object,
+        repulsion_strength = 1
     ):
         self.name = name
         self.node_ids = node_ids
         self.min_degree = min_degree
         self.center = center
         self.constraint = constraint
+        self.repulsion_strength = repulsion_strength
 
         self.pos3d = {}
 
@@ -70,7 +72,7 @@ class Location:
 
         H = self.make_subgraph(whole_graph)
         
-        self.pos3d = spring_layout_3d_constrained(H, self.constraint, seed=7, iterations=450, center=self.center)
+        self.pos3d = spring_layout_3d_constrained(H, self.constraint, seed=7, iterations=350, center=self.center, repulsion_strength = self.repulsion_strength)
         print(self.name, self.center)
 
         #set Node attribute in big Graph
@@ -115,83 +117,87 @@ class CellModel:
         pos3d = {}
         for loc in self.locations.values():
             for node_id, coords in loc.pos3d.items():
-                if node_id not in pos3d: #must be changed for multilocalized proteins
+                if node_id not in pos3d: #must be changed for multilocalized proteins    !!!!!!!!!!!!!!!!!!!!!!!
                     pos3d[node_id] = coords
         return pos3d
 
-    def plot_all_locations_3d(self, title = "3D cell - all locations"):
+    def plot_all_locations_3d(self, title="3D cell - all locations", show_boundaries=True):
         fig = go.Figure()
 
-        
-        for loc_name, loc in self.locations.items():    # Loop over all Locations
-            
-            # Subgraph with only nodes of one location
+        def _translate_trace(trace, center):
+            dx, dy, dz = center
+
+            # Surface (2D-Gitter)
+            if getattr(trace, "type", None) == "surface":
+                trace.x = (np.asarray(trace.x) + dx)
+                trace.y = (np.asarray(trace.y) + dy)
+                trace.z = (np.asarray(trace.z) + dz)
+                return trace
+
+            # Scatter3d (1D-Listen, ggf. mit None als Trenner)
+            def shift_1d(arr, d):
+                return [None if v is None else v + d for v in arr]
+
+            trace.x = shift_1d(trace.x, dx)
+            trace.y = shift_1d(trace.y, dy)
+            trace.z = shift_1d(trace.z, dz)
+            return trace
+
+        for loc_name, loc in self.locations.items():
             H = loc.make_subgraph(self.whole_cell_graph)
 
-            # create Edges within a location
+            # --- NEW: boundaries zuerst hinzufügen (damit sie "hinten" wirken) ---
+            if show_boundaries and hasattr(loc.constraint, "boundary_traces"):
+                for tr in loc.constraint.boundary_traces():
+                    tr = _translate_trace(tr, loc.center)
+                    # optional: Namen prefixen, Legend ausblenden
+                    tr.name = f"{loc_name}: {getattr(tr, 'name', 'boundary')}"
+                    tr.showlegend = False
+                    fig.add_trace(tr)
+
+            # Edges
             if H.number_of_edges() > 0:
                 edge_x, edge_y, edge_z = [], [], []
-
                 for u, v in H.edges():
-
                     x0, y0, z0 = loc.pos3d[u]
                     x1, y1, z1 = loc.pos3d[v]
-
-                    edge_x += [x0, x1, None] #Plotly uses None as separation mark
+                    edge_x += [x0, x1, None]
                     edge_y += [y0, y1, None]
                     edge_z += [z0, z1, None]
 
-                fig.add_trace(
-                    go.Scatter3d(
-                        x=edge_x,
-                        y=edge_y,
-                        z=edge_z,
-                        mode="lines",
-                        line=dict(width=1),
-                        hoverinfo="none",
-                        opacity=0.35,
-                        showlegend=False,  # Edges not in Legend
-                    )
-                )
+                fig.add_trace(go.Scatter3d(
+                    x=edge_x, y=edge_y, z=edge_z,
+                    mode="lines", line=dict(width=1),
+                    hoverinfo="none", opacity=0.35,
+                    showlegend=False
+                ))
 
-            # nodes of this location
-
+            # Nodes
             xs, ys, zs, texts = [], [], [], []
             for node_id, (x, y, z) in loc.pos3d.items():
-                xs.append(x)
-                ys.append(y)
-                zs.append(z)
+                xs.append(x); ys.append(y); zs.append(z)
                 texts.append(f"{node_id} ({loc_name})")
 
-            fig.add_trace(
-                go.Scatter3d(
-                    x=xs,
-                    y=ys,
-                    z=zs,
-                    mode="markers",
-                    name=loc_name,      #Nodes in legend
-                    hovertext=texts,
-                    hoverinfo="text",
-                    marker=dict(        #Visual properties
-                        size=2,
-                        opacity=0.35,
-                    ),
-                )
-            )
+            fig.add_trace(go.Scatter3d(
+                x=xs, y=ys, z=zs,
+                mode="markers", name=loc_name,
+                hovertext=texts, hoverinfo="text",
+                marker=dict(size=2, opacity=0.35)
+            ))
 
         fig.update_layout(
             title=title,
             showlegend=True,
             margin=dict(l=0, r=0, b=0, t=40),
             scene=dict(
-                xaxis=dict(visible=False),  #Hide all UI axes
+                xaxis=dict(visible=False),
                 yaxis=dict(visible=False),
                 zaxis=dict(visible=False),
-                aspectmode="data" 
+                aspectmode="data"
             ),
         )
-
         fig.show()
+
 
 
 from whole_cell_spatial_graph import whole_cell_G, loc_to_proteins 
@@ -211,129 +217,142 @@ if __name__ == "__main__":
         radius=(9, 2, 1),
         geometry=project_to_sphere
     )
-
-    centrosome = Location(
-        name="Centrosome",
-        node_ids=loc_to_proteins["Centrosome"],
-        center=(100.0, 0.0, 0.0),
-        radius=4.0,
-        geometry=project_to_sphere
-    )
+    '''
 
     endoplasmicreticulum = Location(
         name="Endoplasmic reticulum",
         node_ids=loc_to_proteins["Endoplasmic reticulum"],
-        center=(0.0, 50.0, 0.0),
-        radius=20.0,
-        geometry=project_to_sphere
+        min_degree=10,
+        center=(0.0, 0.0, 0.0),
+        # perinukleäres + zytoplasmatisches ER als Schale um den Kern (grobe Näherung)
+        constraint=ShellConstraint(inner_radius=4040.0, outer_radius=9000.0, wall=5000)
     )
 
     golgiapparatus = Location(
         name="Golgi apparatus",
         node_ids=loc_to_proteins["Golgi apparatus"],
-        center=(50.0, 50.0, 0.0),
-        radius=10.0,
-        geometry=project_to_sphere
+        min_degree=10,
+        # juxtanukleär (außerhalb Kernhülle): Kernhülle endet bei 4040 nm, Golgi "ragt" max 1500 nm Richtung Kern
+        center=(0.0, 0.0, 6000.0),
+        # ~3.0 × 1.2 × 0.8 µm  => Halbachsen 1500/600/400 nm
+        constraint=EllipsoidConstraint(axes=(1500.0, 600.0, 400.0), wall=5000)
+    )
+
+    centrosome = Location(
+        name="Centrosome",
+        node_ids=loc_to_proteins["Centrosome"],
+        min_degree=10,
+        # nahe Kern + nahe Golgi, aber sicher außerhalb der Kernhülle
+        center=(0.0, 0.0, 5200.0),
+        # Vorgabe aus deiner Quelle: Radius 115 nm, Höhe 500 nm
+        constraint=CylinderConstraint(radius=115.0, height=500.0, wall=5000)
     )
 
     intermediatefilaments = Location(
-        name="intermediatefilaments",
+        name="Intermediate filaments",
         node_ids=loc_to_proteins["Intermediate filaments"],
-        center=(50.0, 50.0, 50.0),
-        radius=4.0,
-        geometry=project_to_sphere
+        min_degree=10,
+        center=(0.0, 0.0, 0.0),
+        # IF-Netzwerk füllt typischerweise weite Teile des Zytoplasmas (hier knapp innerhalb der Membran)
+        constraint=EllipsoidConstraint(axes=(9500.0, 7500.0, 7500.0), wall=5000)
     )
 
     microtubules = Location(
         name="Microtubules",
         node_ids=loc_to_proteins["Microtubules"],
-        center=(50.0, 50.0, 100.0),
-        radius=(50, 50, 50),
-        geometry=project_to_sphere
+        min_degree=10,
+        # im ganzen Zytoplasma; spring layout + Kanten ziehen sie i.d.R. Richtung Centrosom
+        center=(0.0, 0.0, 0.0),
+        constraint=EllipsoidConstraint(axes=(9500.0, 7500.0, 7500.0), wall=5000)
     )
 
-    nuclearmembrane = Location(
-        name="Nuclear membrane",
-        node_ids=loc_to_proteins["Nuclear membrane"],
-        center=(150.0, 150.0, 150.0),
-        radius=1.0,
-        geometry=project_to_sphere
+    actinfilaments = Location(
+        name="Actin filaments",
+        node_ids=loc_to_proteins["Actin filaments"],
+        min_degree=10,
+        center=(0.0, 0.0, 0.0),
+        # Actin-Cortex als dünne Schale direkt unter der Membran (~200 nm "Randschicht")
+        # inner axes = Membran-axes - 200 nm
+        # outer ist Multiplikator (hier so, dass x-Achse ~10000 nm erreicht)
+        constraint=EllipsoidShellConstraint(axes=(9800.0, 7800.0, 7800.0), outer=1.020408, wall=500000)
     )
 
     plasmamembrane = Location(
         name="Plasma membrane",
         node_ids=loc_to_proteins["Plasma membrane"],
+        min_degree=10,
         center=(0.0, 0.0, 0.0),
-        radius=900.0,
-        geometry=project_to_sphere_surface
-    )
-
-
-    actinfilaments = Location(
-        name="Actin filaments",
-        node_ids=loc_to_proteins["Actin filaments"],
-        center=(0.0, 0.0, 0.0),
-        radius=500.0,
-        geometry=sample_sphere_surface_projection
+        # Lipidbilayer ~5 nm Dicke (als Shell-Multiplikator angenähert)
+        # outer ~ 1 + 5/10000 = 1.0005 (x-Achse), y/z werden dabei ~4 nm dick -> ok als Näherung
+        constraint=EllipsoidShellConstraint(axes=(10000.0, 8000.0, 8000.0), outer=1.1, wall=500000)
     )
 
     nucleoplasm = Location(
         name="Nucleoplasm",
         node_ids=loc_to_proteins["Nucleoplasm"],
-        center=(0, 0, 0),
-        radius=9.0,
-        geometry=sample_ellipsoid_volume_projection,
-        constraint=SphereConstraint(radius=5.0, wall=5000)
-
+        min_degree=50,
+        center=(0.0, 0.0, 0.0),
+        constraint=SphereConstraint(radius=4000.0, wall=5000),
+        repulsion_strength = 7
     )
 
-    '''
+    nuclearmembrane = Location(
+        name="Nuclear membrane",
+        node_ids=loc_to_proteins["Nuclear membrane"],
+        min_degree=0,
+        center=(0.0, 0.0, 0.0),
+        # Kernhülle grob ~40 nm Gesamtdicke
+        constraint=ShellConstraint(inner_radius=4000.0, outer_radius=4040.0, wall=5000)
+    )
+
     mitochondria = Location(
         name="Mitochondria",
         node_ids=loc_to_proteins["Mitochondria"],
-        min_degree=0,
-        center=(0.0, 20.0, 0.0),
-        constraint=EllipsoidShellConstraint(axes=(10, 8, 8), outer=1.01, wall=500000)
+        min_degree=10,
+        # im Cytoplasma, sicher außerhalb Kernhülle (und gut innerhalb der Membran)
+        center=(-5500.0, 2000.0, 0.0),
+        constraint=EllipsoidConstraint(axes=(325.0, 325.0, 650.0), wall=5000)
     )
 
     primarycilium = Location(
         name="Primary cilium",
         node_ids=loc_to_proteins["Primary cilium"],
-        min_degree=1,
-        center=(0.0, 0.0, 0.0),
-        constraint=ShellConstraint(inner_radius=5.1, outer_radius=5.3, wall=5000)
+        min_degree=10,
+        # Membran "oben" bei z≈8000; Cilium-Länge 5000 => Center bei 8000 + 2500
+        center=(0.0, 0.0, 10500.0),
+        # Ø ~0.25 µm => r ~125 nm; Länge ~5 µm => 5000 nm
+        constraint=CylinderConstraint(radius=125.0, height=5000.0, wall=5000)
     )
-
 
     nucleoli = Location(
         name="Nucleoli",
         node_ids=loc_to_proteins["Nucleoli"],
-        min_degree=1,
-        center=(0.0, 0.0, 0.0),
-        constraint=SphereConstraint(radius=5.0, wall=5000)
+        min_degree=10,
+        # innerhalb des Nucleoplasmas
+        center=(900.0, 800.0, 200.0),
+        # Beispiel: Ø 1.2 µm => r 600 nm
+        constraint=SphereConstraint(radius=600.0, wall=5000)
     )
 
+
+
     #Add locations to cell
-    '''
-    cell.add_location(cytosol)
+    
+    #cell.add_location(cytosol)
+    
     cell.add_location(centrosome)
     cell.add_location(actinfilaments)
     cell.add_location(endoplasmicreticulum)
     cell.add_location(golgiapparatus)
     cell.add_location(intermediatefilaments)
     cell.add_location(microtubules)
-    cell.add_location(mitochondria)
     cell.add_location(nuclearmembrane)
     cell.add_location(nucleoli)
-    cell.add_location(actinfilaments)
-    cell.add_location(primarycilium)
-    cell.add_location(nucleoli)
+    cell.add_location(plasmamembrane)
     cell.add_location(nucleoplasm)
-    '''
-    #cell.add_location(primarycilium)
+    cell.add_location(primarycilium)
     cell.add_location(mitochondria)
-    #cell.add_location(nucleoli)
-
+ 
     print(cell.summary()) #prints a summary of all locations
 
     cell.assign_all_positions() #assigns 3D coordinates to locations
