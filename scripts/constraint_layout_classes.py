@@ -301,37 +301,25 @@ class EllipsoidShellConstraint():
         return points
 
     def forces(self, q):
-        a, b, c = self.axes
-        axes = np.array([a, b, c], dtype=float)
+        axes = np.asarray(self.axes, dtype=float)
+        axes2 = axes * axes
 
         # scaled radius s = ||(x/a, y/b, z/c)||
-   
-        #scale points into unit sphere coordinate system for easy check, wether a point is inside or outside
-        # q_scaled = (x/a, y/b, z/c) -> transfrorms ellipsoid points into sphere points
-        # p (ellipsoid) -> p_scaled (unit sphere) 
         q_scaled = q / axes[None, :]
-        
-        #get distance to center in unit sphere room for each point
-        dist_scaled = np.linalg.norm(q_scaled, axis=1) + 1e-12
-        
-             # dist_scaled > 1: point outside of ellipsoid
-             # dist_scaled < 1: point inside of ellipsoid
+        s = np.linalg.norm(q_scaled, axis=1) + 1e-12
 
-        # direction for pushing back inward in ORIGINAL coordinates:
-        
-        axes2 = axes * axes
-        directions = (q / axes2[None, :]) / dist_scaled[:, None]
-            #q / axes^2 -> (x/a², y/b², z/c²): Weighted Direction pointing outside of ellipsoid -> long axes have less weigth (because there is more room) then short axes (small room until wall)
-            # (q / axes2[None, :]) / dist_scaled[:, None] -> normalize direction, so force and direction are separated
+        # "Normal" im Originalraum (Gradient) -> dann auf Unit-Länge bringen
+        n = (q / axes2[None, :]) / s[:, None]
+        n /= (np.linalg.norm(n, axis=1, keepdims=True) + 1e-12)
 
-        # outer wall: s > outer -> push inward
-        excess_out = np.maximum(0.0, dist_scaled - self.outer)
-        # inner wall: s < 1 -> push outward
-        excess_in = np.maximum(0.0, 1.0 - dist_scaled)
+        # scaled penetration -> in echte Längeneinheiten umrechnen
+        L = float(np.mean(axes))  # alternativ: np.linalg.norm(axes)/np.sqrt(3)
+        excess_out = np.maximum(0.0, s - self.outer) * L
+        excess_in  = np.maximum(0.0, 1.0 - s) * L
 
         F = np.zeros_like(q)
-        F += -(self.wall * excess_out)[:, None] * directions
-        F += +(self.wall * excess_in)[:, None] * directions
+        F += -(self.wall * excess_out)[:, None] * n  # pull in
+        F += +(self.wall * excess_in)[:, None] * n   # push out
         return F
 
     def boundary_traces(self):
@@ -375,12 +363,12 @@ def spring_layout_3d_constrained(
     pos = constraint.sample(n, rng) #sample starting positions
 
     # k = prefered distance between two nodes
-    # couple k to volume
+    # couple k to volume of boundary quader -> estimation for k
     if k is None:
-        extent = np.ptp(pos, axis=0) # (Lx, Ly, Lz)
+        extent = np.ptp(pos, axis=0) # Boundary Quader (Lx, Ly, Lz)
         extent = np.maximum(extent, 1e-12) # avoid zeros
         bbox_vol = float(extent[0] * extent[1] * extent[2])
-        k = (bbox_vol / n) ** (1.0 / 3.0) # 3rd square-root of cube = edge-length of cube
+        k = (bbox_vol / n) ** (1.0 / 3.0) # 3rd square-root of cube = edge-length of cube = estimate for k
 
         print(k)
 
@@ -388,7 +376,7 @@ def spring_layout_3d_constrained(
     #big steps in the beginning, small steps later for equilibrium
 
     bounding_box = np.ptp(pos, axis=0) #peak-to-peak -> calculates the dimensions of a boundary quader (Lx, Ly, Lz), which holds exactly all points
-    t = bounding_box.max() * 0.1 # the temperature is the highest edge-length of that quader (either Lx, Ly or Lz)
+    t = bounding_box.max() * 0.1  # the temperature is the highest edge-length of that quader (either Lx, Ly or Lz)
     # -> largest box-edge is a fast meassure for the scale-dimension of all points, so that layout and temperature match together
     
     dt = t / (iterations + 1) #delta reduction of temperature in each interation
@@ -433,7 +421,7 @@ def spring_layout_3d_constrained(
         step = disp * (t / disp_length)[:, None] 
             #strength of vectors in step is a fraction of temperature
             #temperature is initialized by boundary box of initial sample() point cloud -> largest side of quader
-        
+
         pos += step #add temperature corrected movement-vectors to positions -> shift
 
         #prevent center drift -> recenter after each iteration
