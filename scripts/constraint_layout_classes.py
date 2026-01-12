@@ -224,7 +224,7 @@ class EllipsoidConstraint():
         points[:, 1] *= b
         points[:, 2] *= c
         return points
-
+    '''
     def forces(self, q):
         a, b, c = self.axes
         axes = np.array([a, b, c], dtype=float)
@@ -251,7 +251,22 @@ class EllipsoidConstraint():
         excess = np.maximum(0.0, dist_scaled - 1.0) #minus 1 to only meassure the outside part
         F = -(self.wall * excess)[:, None] * directions
         return F
+    '''
+    def forces(self, q):
+        axes = np.asarray(self.axes, dtype=float)
+        axes2 = axes * axes
 
+        q_scaled = q / axes[None, :]
+        s = np.linalg.norm(q_scaled, axis=1) + 1e-12
+
+        n = (q / axes2[None, :]) / s[:, None]
+        n /= (np.linalg.norm(n, axis=1, keepdims=True) + 1e-12)
+
+        L = float(np.mean(axes))
+        excess = np.maximum(0.0, s - 1.0) * L
+
+        return -(self.wall * excess)[:, None] * n
+    
     def boundary_traces(self):
         a, b, c = self.axes
         uu = np.linspace(0, 2*np.pi, 45)
