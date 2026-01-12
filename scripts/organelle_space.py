@@ -146,11 +146,9 @@ class CellModel:
         for loc_name, loc in self.locations.items():
             H = loc.make_subgraph(self.whole_cell_graph)
 
-            # --- NEW: boundaries zuerst hinzufügen (damit sie "hinten" wirken) ---
             if show_boundaries and hasattr(loc.constraint, "boundary_traces"):
                 for tr in loc.constraint.boundary_traces():
                     tr = _translate_trace(tr, loc.center)
-                    # optional: Namen prefixen, Legend ausblenden
                     tr.name = f"{loc_name}: {getattr(tr, 'name', 'boundary')}"
                     tr.showlegend = False
                     fig.add_trace(tr)
@@ -209,22 +207,21 @@ if __name__ == "__main__":
     cell = CellModel(whole_cell_G)
 
     #Define Locations
-    '''
+    
     cytosol = Location(
         name="Cytosol",
         node_ids=loc_to_proteins["Cytosol"],
-        center=(50.0, 0.0, 0.0),
-        radius=(9, 2, 1),
-        geometry=project_to_sphere
+        min_degree=10,
+        center=(0.0, 0.0, 0.0),
+        constraint=EllipsoidConstraint(axes=(10000.0, 8000.0, 8000.0), wall=5000)
     )
-    '''
+    
 
     endoplasmicreticulum = Location(
         name="Endoplasmic reticulum",
         node_ids=loc_to_proteins["Endoplasmic reticulum"],
         min_degree=10,
         center=(0.0, 0.0, 0.0),
-        # perinukleäres + zytoplasmatisches ER als Schale um den Kern (grobe Näherung)
         constraint=ShellConstraint(inner_radius=4040.0, outer_radius=5000.0, wall=5000)
     )
 
@@ -232,9 +229,7 @@ if __name__ == "__main__":
         name="Golgi apparatus",
         node_ids=loc_to_proteins["Golgi apparatus"],
         min_degree=10,
-        # juxtanukleär (außerhalb Kernhülle): Kernhülle endet bei 4040 nm, Golgi "ragt" max 1500 nm Richtung Kern
         center=(0.0, 0.0, 6000.0),
-        # ~3.0 × 1.2 × 0.8 µm  => Halbachsen 1500/600/400 nm
         constraint=EllipsoidConstraint(axes=(1500.0, 600.0, 400.0), wall=5000)
     )
 
@@ -242,9 +237,7 @@ if __name__ == "__main__":
         name="Centrosome",
         node_ids=loc_to_proteins["Centrosome"],
         min_degree=10,
-        # nahe Kern + nahe Golgi, aber sicher außerhalb der Kernhülle
         center=(0.0, 0.0, 5200.0),
-        # Vorgabe aus deiner Quelle: Radius 115 nm, Höhe 500 nm
         constraint=CylinderConstraint(radius=115.0, height=500.0, wall=5000)
     )
 
@@ -253,7 +246,6 @@ if __name__ == "__main__":
         node_ids=loc_to_proteins["Intermediate filaments"],
         min_degree=0,
         center=(0.0, 0.0, 0.0),
-        # IF-Netzwerk füllt typischerweise weite Teile des Zytoplasmas (hier knapp innerhalb der Membran)
         constraint=EllipsoidConstraint(axes=(9500.0, 7500.0, 7500.0), wall=5000)
     )
 
@@ -261,7 +253,6 @@ if __name__ == "__main__":
         name="Microtubules",
         node_ids=loc_to_proteins["Microtubules"],
         min_degree=0,
-        # im ganzen Zytoplasma; spring layout + Kanten ziehen sie i.d.R. Richtung Centrosom
         center=(0.0, 0.0, 0.0),
         constraint=EllipsoidConstraint(axes=(9500.0, 7500.0, 7500.0), wall=5000)
     )
@@ -271,9 +262,6 @@ if __name__ == "__main__":
         node_ids=loc_to_proteins["Actin filaments"],
         min_degree=10,
         center=(0.0, 0.0, 0.0),
-        # Actin-Cortex als dünne Schale direkt unter der Membran (~200 nm "Randschicht")
-        # inner axes = Membran-axes - 200 nm
-        # outer ist Multiplikator (hier so, dass x-Achse ~10000 nm erreicht)
         constraint=EllipsoidShellConstraint(axes=(9800.0, 7800.0, 7800.0), outer=1.020408, wall=500000)
     )
 
@@ -282,8 +270,6 @@ if __name__ == "__main__":
         node_ids=loc_to_proteins["Plasma membrane"],
         min_degree=10,
         center=(0.0, 0.0, 0.0),
-        # Lipidbilayer ~5 nm Dicke (als Shell-Multiplikator angenähert)
-        # outer ~ 1 + 5/10000 = 1.0005 (x-Achse), y/z werden dabei ~4 nm dick -> ok als Näherung
         constraint=EllipsoidShellConstraint(axes=(10000.0, 8000.0, 8000.0), outer=1.1, wall=500000)
     )
 
@@ -301,7 +287,6 @@ if __name__ == "__main__":
         node_ids=loc_to_proteins["Nuclear membrane"],
         min_degree=0,
         center=(0.0, 0.0, 0.0),
-        # Kernhülle grob ~40 nm Gesamtdicke
         constraint=ShellConstraint(inner_radius=4000.0, outer_radius=4040.0, wall=5000)
     )
 
@@ -309,7 +294,6 @@ if __name__ == "__main__":
         name="Mitochondria",
         node_ids=loc_to_proteins["Mitochondria"],
         min_degree=10,
-        # im Cytoplasma, sicher außerhalb Kernhülle (und gut innerhalb der Membran)
         center=(-5500.0, 2000.0, 0.0),
         constraint=EllipsoidConstraint(axes=(325.0, 325.0, 650.0), wall=5000)
     )
@@ -318,9 +302,7 @@ if __name__ == "__main__":
         name="Primary cilium",
         node_ids=loc_to_proteins["Primary cilium"],
         min_degree=10,
-        # Membran "oben" bei z≈8000; Cilium-Länge 5000 => Center bei 8000 + 2500
-        center=(0.0, 0.0, 10500.0),
-        # Ø ~0.25 µm => r ~125 nm; Länge ~5 µm => 5000 nm
+        center=(0, 0, 8500),
         constraint=CylinderConstraint(radius=125.0, height=1000.0, wall=5000)
     )
 
@@ -328,9 +310,7 @@ if __name__ == "__main__":
         name="Nucleoli",
         node_ids=loc_to_proteins["Nucleoli"],
         min_degree=10,
-        # innerhalb des Nucleoplasmas
         center=(900.0, 800.0, 200.0),
-        # Beispiel: Ø 1.2 µm => r 600 nm
         constraint=SphereConstraint(radius=600.0, wall=5000),
         repulsion_strength = 2
     )
@@ -342,11 +322,11 @@ if __name__ == "__main__":
     #cell.add_location(cytosol)
     
     cell.add_location(centrosome)
-    #cell.add_location(actinfilaments)
+    cell.add_location(actinfilaments)
     cell.add_location(endoplasmicreticulum)
     cell.add_location(golgiapparatus)
-    #cell.add_location(intermediatefilaments)
-    #cell.add_location(microtubules)
+    cell.add_location(intermediatefilaments)
+    cell.add_location(microtubules)
     cell.add_location(nuclearmembrane)
     cell.add_location(nucleoli)
     cell.add_location(plasmamembrane)
