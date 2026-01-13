@@ -1,4 +1,3 @@
-
 import numpy as np
 import networkx as nx
 import math
@@ -454,55 +453,6 @@ def spring_layout_3d_constrained(
     
     return {nodes[i]: pos[i] for i in range(n)}
 
-
-"""
-def plot_layout_3d(G, pos, extra_traces=None, title="3D constrained spring layout"):
-    #Plot only nodes + edges + boundaries (as extra_trace)
-    extra_traces = extra_traces or []
-    nodes = list(G)
-
-    X = np.array([pos[u][0] for u in nodes])
-    Y = np.array([pos[u][1] for u in nodes])
-    Z = np.array([pos[u][2] for u in nodes])
-
-    xe, ye, ze = [], [], []
-    for u, v in G.edges():
-        xe += [pos[u][0], pos[v][0], None]
-        ye += [pos[u][1], pos[v][1], None]
-        ze += [pos[u][2], pos[v][2], None]
-
-    edge_trace = go.Scatter3d(
-        x=xe, y=ye, z=ze, mode="lines",
-        line=dict(width=2, color="rgba(120,120,120,0.35)"),
-        hoverinfo="skip", name="edges",
-    )
-
-    C = np.column_stack([X, Y, Z]).mean(axis=0)
-    cval = np.sqrt((X - C[0])**2 + (Y - C[1])**2 + (Z - C[2])**2)
-
-    node_trace = go.Scatter3d(
-        x=X, y=Y, z=Z, mode="markers",
-        marker=dict(size=6, color=cval, colorscale="Viridis", opacity=0.95,
-                    colorbar=dict(title="dist to centroid")),
-        hoverinfo="text", name="nodes",
-        text=[f"node {u}<br>deg={G.degree(u)}" for u in nodes],
-    )
-
-    fig = go.Figure(data=list(extra_traces) + [edge_trace, node_trace])
-    
-    fig.update_layout(
-        title=title,
-        showlegend=True,
-        margin=dict(l=0, r=0, b=0, t=40),
-        scene=dict(
-            xaxis=dict(visible=False),  #Hide all UI axes
-            yaxis=dict(visible=False),
-            zaxis=dict(visible=False),
-            aspectmode="data",
-        ),
-    )
-    return fig
-"""
 
 if __name__ == "__main__":
     

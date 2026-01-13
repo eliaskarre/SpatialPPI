@@ -60,7 +60,7 @@ def download_tsv_results(results_url, fields):
 
 
 #read Localization Data
-loc_df = pd.read_csv("SpatialPPI/data/protein_location_HPA_GO.tsv", sep="\t", dtype=str)
+loc_df = pd.read_csv("protein_location_HPA_GO.tsv", sep="\t", dtype=str)
 
 #get all unique proteins to list
 unique_proteins = loc_df["protein"].unique().tolist()
@@ -92,10 +92,13 @@ print(map_df.head())
 loc_mapped = loc_df.copy() #make new df
 loc_mapped["uniprot_id"] = loc_mapped["protein"].map(map_df) #create column with mapped IDs
 
+#normalize names without spaces and lower-case
+loc_mapped["location"] = loc_mapped["location"].astype(str).str.strip().str.lower().str.replace(r"\s+", "", regex=True)
+
 print(loc_mapped.head())
 
 #Safe Failed Mapping to file
 loc_mapped[loc_mapped["uniprot_id"].isna()].to_csv("location_with_uniprot_failed.tsv", sep="\t", index=False)
 
 #Safe mapped localization data to file (includes failed mapping as missing numbers in uniprot_id)
-loc_mapped.to_csv("location_with_uniprot2.tsv", sep="\t", index=False)
+loc_mapped.to_csv("location_with_uniprot.tsv", sep="\t", index=False)

@@ -70,11 +70,9 @@ nodes_with_loc = all_nodes.intersection(loc_df["uniprot_id"])
 for node in nodes_with_loc:
     whole_cell_G.nodes[node]["locations"] = {} #should be a dictionary
 
-    for location in protein_to_locations[node]:
-         #3D sampling needs to be replaced with our placing logic -> 3D space
-         #fill dictionary with locations and 3D coordinates
-         #G.nodes[node]["locations"][location] = sample_ellipsoid((0.0, 0.0, 0.0), (4.0, 2.0, 2.0), n_points=1, rng=42)[0]
-         continue
+
+#for location in protein_to_locations[node]:
+         
 
 
 

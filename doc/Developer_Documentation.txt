@@ -1,0 +1,5 @@
+Locationnames in config file and localization data must match
+
+python3 -m cli --ppi "../data/consensus_ppi_bioplex_biogrid_intact_huri_edgelist.tsv" --localizations "../data/location_with_uniprot.tsv" --config "config.json" --outdir "." --plot
+
+--exclude and --only can take multiple locations by comma separating the arguments without spaces: -exclude plasmamembrane,primarycilium

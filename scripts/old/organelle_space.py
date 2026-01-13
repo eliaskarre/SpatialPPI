@@ -2,12 +2,13 @@ import math
 import random
 from typing import List, Dict, Tuple, Optional, Callable
 import numpy as np
+import pandas as pd
 
 import networkx as nx
 
 import plotly.graph_objects as go
 
-from geometry import *
+#from geometry import *
 from constraint_layout_classes import *
 
 class Location:
@@ -82,7 +83,7 @@ class Location:
 
 class CellModel:
     """
-    holds the whole_cell_graph and a ditionary of all location objects.
+    holds the whole_cell_graph and a ditionary of all location objects
     Everything should come together here.
     """
 
@@ -340,17 +341,6 @@ if __name__ == "__main__":
 
     #print(primarycilium.pos3d)
 
-    '''
-    from constraint_layout_classes import *
-
-    test_subgraph = mitochondria.make_subgraph(whole_cell_G)
-
-    constraint = SphereConstraint(radius=5.0, wall=5000)
-    pos = spring_layout_3d_constrained(test_subgraph, constraint, seed=7, iterations=450)
-    print(pos)
-    plot_layout_3d(test_subgraph, pos, extra_traces=constraint.boundary_traces(), title="Mitochondria").show()
-    '''
-
     #Print Edge list of whole_cell_graph in cell
     '''
     edge_nodes_with_attrs = [
@@ -362,5 +352,17 @@ if __name__ == "__main__":
         #print(pair)
         continue
     '''
+
+    # Write positions (long format)
+    rows = []
+    for loc_name, loc in cell.locations.items():
+        for node, (x, y, z) in loc.pos3d.items():
+            rows.append({"node": node, "location": loc_name, "x": x, "y": y, "z": z})
+
+    pos_path = "old_positions_per_location.tsv"
+    print(pos_path)
+    pd.DataFrame(rows).to_csv(pos_path, sep="\t", index=False)
+
+
     #Plot 
     cell.plot_all_locations_3d("3D cell - all locations with edges")
