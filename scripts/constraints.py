@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import math
 import plotly.graph_objects as go
-from typing import Optional, List
+from typing import List
 
 """
 Constraint Class:
@@ -360,14 +360,13 @@ class EllipsoidShellConstraint():
 def spring_layout_3d_constrained(
     G,
     constraint,
-    iterations: int = 350,
-    seed: int = 1,
-    k: Optional[float] = None,
+    iterations: int,
+    seed: int,
+    k: float = None,
     threshold: float = 1e-4,
     recenter_each_iter: bool = True,
     center=(0.0, 0.0, 0.0),
-    edge_strength: float = 1.0,      # <--- Attraktion
-    repulsion_strength: float = 1.0, # <--- Repulsion 
+    repulsion_strength: float = 1.0
 ):
     nodes = list(G)
     n = len(nodes)
@@ -418,7 +417,7 @@ def spring_layout_3d_constrained(
         
         #coeff is a n x n matrix of scalars, which determines for each point how strong they attract or repell
         #-> strength of force
-        coeff = (repulsion_strength * (k * k) / (dist * dist)) - (edge_strength * A * dist / k)
+        coeff = (repulsion_strength * (k * k) / (dist * dist)) - (A * dist / k)
         
         # disp is for each node i the whole move-vector (force), which is calculated from all other pair-forces
         disp = np.einsum("ijk,ij->ik", delta, coeff)

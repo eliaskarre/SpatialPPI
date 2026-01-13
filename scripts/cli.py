@@ -26,22 +26,21 @@ def run() -> int:
         ),
     )
 
-    p.add_argument("--ppi", required=True, help="Path to 2-column edge list TSV/CSV")   #wprks
-    p.add_argument("--localizations", required=True, help="Path to localization TSV")   #works
-    p.add_argument("--config", required=True, help="Path to JSON config (see examples)")#works
-    p.add_argument("--outdir", required=True, help="Output directory")                  #works
+    p.add_argument("--ppi", required=True, help="Path to 2-column edge list TSV/CSV")
+    p.add_argument("--localizations", required=True, help="Path to localization TSV")
+    p.add_argument("--config", required=True, help="Path to JSON config (see examples)")
+    p.add_argument("--outdir", required=True, help="Output directory")                  
 
-    p.add_argument("--only", help="Comma-separated list of location names to include")      #works
-    p.add_argument("--exclude", help="Comma-separated list of location names to exclude")   #works
+    p.add_argument("--only", help="Comma-separated list of location names to include")      
+    p.add_argument("--exclude", help="Comma-separated list of location names to exclude")   
 
-    p.add_argument("--seed", type=int, help="Override global seed")                     #does not work yet
-    p.add_argument("--iterations", type=int, help="Override global iterations")         #does not work yet
-    p.add_argument("--edge-strength", type=float, help="Override global edge_strength") #does not work yet, maybe get rid of it
+    p.add_argument("--seed", type=int, help="Override global seed")                    
+    p.add_argument("--iterations", type=int, help="Override global iterations")         
 
-    p.add_argument("--plot", action="store_true", help="Interactive Plotly graph") #works
-    p.add_argument("--plot-title", default="3D cell", help="Plot title")           #works
-    p.add_argument("--no-boundaries", action="store_true", help="Do not draw organelle boundaries") #does not work yet
-    p.add_argument("--no-edges", action="store_true", help="Do not draw edges")                     #does not work
+    p.add_argument("--plot", action="store_true", help="Interactive Plotly graph") 
+    p.add_argument("--plot-title", default="3D cell", help="Plot title")          
+    p.add_argument("--no-boundaries", action="store_false", help="Do not draw organelle boundaries") 
+    p.add_argument("--no-edges", action="store_false", help="Do not draw edges")                     
 
     args = p.parse_args()
 
@@ -55,9 +54,10 @@ def run() -> int:
         global_params["seed"] = args.seed
     if args.iterations is not None:
         global_params["iterations"] = args.iterations
-    if args.edge_strength is not None:
-        global_params["edge_strength"] = args.edge_strength
     
+    print("Iterations: ", global_params["iterations"])
+    print("Seed: ", global_params["seed"])
+
     only = parse_list(args.only)
     exclude = set(parse_list(args.exclude) or [])
     
@@ -72,6 +72,10 @@ def run() -> int:
 
     configured_names = []
     for spec in cfg.locations:
+        if spec.name not in loc_to_proteins:
+            print(f"Warning: {spec.name} is in the config but not found in the localization table.")
+            continue
+
         if only is not None and spec.name not in only:
             continue
         if spec.name in exclude:
@@ -81,7 +85,6 @@ def run() -> int:
         nodes = sorted(x for x in raw if isinstance(x, str) and x.strip() != "") # <- ignore NANs (occure because no loaction in locationfile)
 
         if not nodes:
-            # Keep going, but warn into summary.
             pass
 
         constraint = build_constraint(spec.constraint_type, spec.constraint_params)
@@ -92,6 +95,8 @@ def run() -> int:
             center=spec.center,
             constraint=constraint,
             repulsion_strength=spec.repulsion_strength,
+            seed=global_params["seed"],
+            iterations=global_params["iterations"]
         )
         cell.add_location(loc)
         configured_names.append(spec.name)
@@ -118,24 +123,18 @@ def run() -> int:
     # Summary
     summary = cell.summary()
     
-    '''
+    
     # add selection warnings
     missing = [name for name in configured_names if name not in loc_to_proteins]
-    summary["warnings"] = []
     if missing:
-        summary["warnings"].append(
-            {
-                "type": "location_missing_in_localization_table",
-                "locations": missing,
-                "hint": "These location names were in the config but not found in the localization table.",
-            }
-        )
-    '''
+        print("Warning: ", missing)
+        print("These location names were in the config but not found in the localization table.")
+    
     #Plot
     if args.plot:
         #fig = cell.plot_all_locations_3d(title=args.plot_title)
         
-        cell.plot_all_locations_3d(title=args.plot_title)
+        cell.plot_all_locations_3d(title=args.plot_title, show_boundaries=args.no_boundaries, show_edges=args.no_edges)
         
         #html_path = outdir / "cell_plot.html"
         #fig.write_html(html_path)

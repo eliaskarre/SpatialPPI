@@ -27,14 +27,20 @@ class Location:
         min_degree: int,
         center: Tuple[float, float, float],
         constraint: object,
-        repulsion_strength = 1
+        
+        seed: int, 
+        iterations: int,
+        repulsion_strength: float,
     ):
         self.name = name
         self.node_ids = node_ids
         self.min_degree = min_degree
         self.center = center
         self.constraint = constraint
+        
         self.repulsion_strength = repulsion_strength
+        self.seed = seed
+        self.iterations = iterations
 
         self.pos3d = {}
 
@@ -70,7 +76,7 @@ class Location:
 
         H = self.make_subgraph(whole_graph)
         
-        self.pos3d = spring_layout_3d_constrained(H, self.constraint, seed=7, iterations=350, center=self.center, repulsion_strength = self.repulsion_strength)
+        self.pos3d = spring_layout_3d_constrained(H, self.constraint, seed=self.seed, iterations=self.iterations, center=self.center, repulsion_strength = self.repulsion_strength)
         print(self.name, self.center)
 
         #set Node attribute in big Graph
@@ -119,7 +125,7 @@ class CellModel:
                     pos3d[node_id] = coords
         return pos3d
 
-    def plot_all_locations_3d(self, title="3D cell - all locations", show_boundaries=True):
+    def plot_all_locations_3d(self, title="3D cell - all locations", show_boundaries=True, show_edges= True):
         fig = go.Figure()
 
         def _translate_trace(trace, center):
@@ -152,7 +158,7 @@ class CellModel:
                     fig.add_trace(tr)
 
             # Edges
-            if H.number_of_edges() > 0:
+            if H.number_of_edges() > 0 and show_edges:
                 edge_x, edge_y, edge_z = [], [], []
                 for u, v in H.edges():
                     x0, y0, z0 = loc.pos3d[u]
