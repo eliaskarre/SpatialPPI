@@ -1,5 +1,7 @@
 Locationnames in config file and localization data must match
-seed and iterations can be set in config. This can optionally be overwritten via --seed/--iterations parameters in the terminal
+
+seed and iterations can be set via --seed/--iterations parameters in the terminal
+default settings must be set in the config file
 
 
 python3 -m cli --ppi "../data/consensus_ppi_bioplex_biogrid_intact_huri_edgelist.tsv" --localizations "../data/location_with_uniprot.tsv" --config "config.json" --outdir "." --plot

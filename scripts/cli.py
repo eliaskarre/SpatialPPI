@@ -34,8 +34,8 @@ def run() -> int:
     p.add_argument("--only", help="Comma-separated list of location names to include")      
     p.add_argument("--exclude", help="Comma-separated list of location names to exclude")   
 
-    p.add_argument("--seed", type=int, help="Override global seed")                    
-    p.add_argument("--iterations", type=int, help="Override global iterations")         
+    p.add_argument("--seed", type=int, help="Set seed for layout algorithm")                    
+    p.add_argument("--iterations", type=int, help="Set iterations for layout")         
 
     p.add_argument("--plot", action="store_true", help="Interactive Plotly graph") 
     p.add_argument("--plot-title", default="3D cell", help="Plot title")          
@@ -47,16 +47,24 @@ def run() -> int:
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
 
-    # Load config
+    # Load config and set defaults
     cfg = load_config(args.config)
-    global_params = dict(cfg.global_params)
-    if args.seed is not None:
-        global_params["seed"] = args.seed
-    if args.iterations is not None:
-        global_params["iterations"] = args.iterations
+    default_params = dict(cfg.default_params)
     
-    print("Iterations: ", global_params["iterations"])
-    print("Seed: ", global_params["seed"])
+    if args.seed is not None:
+        seed = args.seed
+        print("set seed to ", seed)
+    else:
+        seed = default_params["seed"]
+        print("used default seed ", seed)
+
+    if args.iterations is not None:
+        iterations = args.iterations
+        print("set iterations to ", iterations)
+    else:
+        iterations = default_params["iterations"]
+        print("used default iterations ", iterations)
+    
 
     only = parse_list(args.only)
     exclude = set(parse_list(args.exclude) or [])
@@ -95,8 +103,8 @@ def run() -> int:
             center=spec.center,
             constraint=constraint,
             repulsion_strength=spec.repulsion_strength,
-            seed=global_params["seed"],
-            iterations=global_params["iterations"]
+            seed=seed,
+            iterations=iterations
         )
         cell.add_location(loc)
         configured_names.append(spec.name)

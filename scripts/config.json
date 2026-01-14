@@ -1,10 +1,7 @@
 {
-  "global": {
+  "default": {
     "seed": 7,
-    "iterations": 350,
-    "threshold": 1e-4,
-    "recenter_each_iter": true,
-    "edge_strength": 1.0
+    "iterations": 350
   },
   "locations": [
     {
