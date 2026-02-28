@@ -1,7 +1,6 @@
 """Command line interface"""
 import argparse
 from pathlib import Path
-import pandas as pd
 from typing import List
 
 from io_helpers import *
@@ -71,7 +70,7 @@ def run() -> int:
     
     # Load data
     G = load_ppi_graph(args.ppi)
-    print(G)
+    #print(G)
     loc_to_proteins, protein_to_locations, loc_df = load_localizations(args.localizations)
     init_locations_attribute(G)
 
@@ -84,9 +83,9 @@ def run() -> int:
             print(f"Warning: {spec.name} is in the config but not found in the localization table.")
             continue
 
-        if only is not None and spec.name not in only:
+        if only is not None and spec.name not in only: #skip everything that is not in only
             continue
-        if spec.name in exclude:
+        if spec.name in exclude: #skip every excluded loaction
             continue
 
         raw = loc_to_proteins.get(spec.name, set())
@@ -112,40 +111,22 @@ def run() -> int:
     if not configured_names:
         raise SystemExit("No locations selected. Check --only/--exclude and your config.")
     
-    print(cell.locations)
+    #print(cell.locations)
 
     # Run layout
     cell.assign_all_positions()
 
-    # Write positions (long format)
-    rows = []
-    for loc_name, loc in cell.locations.items():
-        for node, (x, y, z) in loc.pos3d.items():
-            #rows.append({"node": node, "location": loc_name, "x": x, "y": y, "z": z})
-            rows.append({"node": node, "x": x, "y": y, "z": z})
-
-    pos_path = outdir / "positions_per_location.tsv"
-    print(pos_path)
-    pd.DataFrame(rows).to_csv(pos_path, sep="\t", index=False)
+    #write positions in file
+    out_path = write_positions(cell, outdir)
+    print("Wrote:", out_path)
 
     # Summary
-    summary = cell.summary()
-    
-    
-    # add selection warnings
-    missing = [name for name in configured_names if name not in loc_to_proteins]
-    if missing:
-        print("Warning: ", missing)
-        print("These location names were in the config but not found in the localization table.")
+    cell.summary()
     
     #Plot
     if args.plot:
-        #fig = cell.plot_all_locations_3d(title=args.plot_title)
-        
         cell.plot_all_locations_3d(title=args.plot_title, show_boundaries=args.no_boundaries, show_edges=args.no_edges)
         
-        #html_path = outdir / "cell_plot.html"
-        #fig.write_html(html_path)
 
     return 0
 

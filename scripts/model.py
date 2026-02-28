@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import plotly.graph_objects as go
 
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List, Tuple
 
 from constraints import spring_layout_3d_constrained
 
@@ -71,17 +71,19 @@ class Location:
         """
         -Assigns all nodes of this location a (x,y,z) position (pos3D)
         -Saves them as Node Attributes in big whole-cell graph.
-        
+ 
         """
 
         H = self.make_subgraph(whole_graph)
         
         self.pos3d = spring_layout_3d_constrained(H, self.constraint, seed=self.seed, iterations=self.iterations, center=self.center, repulsion_strength = self.repulsion_strength)
-        print(self.name, self.center)
+        print(self.name, " layout complete")
 
-        #set Node attribute in big Graph
+        #set Node attributes in big Graph
         for node in self.pos3d.keys():
+            #set positions
             whole_graph.nodes[node]["locations"][self.name] = self.pos3d[node]
+
         
 
 class CellModel:
@@ -110,20 +112,6 @@ class CellModel:
         for name, loc in self.locations.items():
             H = loc.make_subgraph(self.whole_cell_graph)
             print(f"- {name}: {H.number_of_nodes()} nodes, {H.number_of_edges()} edges")
-    
-    def build_global_pos3d(self):
-        """
-        Merge all Location.pos3d into one dict: node_id -> (x, y, z)
-
-        Decide which Proteins should be kept. If a node is in multiple locations, keep the first position
-        encountered -> need to change that
-        """
-        pos3d = {}
-        for loc in self.locations.values():
-            for node_id, coords in loc.pos3d.items():
-                if node_id not in pos3d: #must be changed for multilocalized proteins    !!!!!!!!!!!!!!!!!!!!!!!
-                    pos3d[node_id] = coords
-        return pos3d
 
     def plot_all_locations_3d(self, title="3D cell - all locations", show_boundaries=True, show_edges= True):
         fig = go.Figure()

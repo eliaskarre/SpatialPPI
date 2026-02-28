@@ -2,7 +2,6 @@
 
 import numpy as np
 import networkx as nx
-import math
 import plotly.graph_objects as go
 from typing import List
 
@@ -225,34 +224,7 @@ class EllipsoidConstraint():
         points[:, 1] *= b
         points[:, 2] *= c
         return points
-    '''
-    def forces(self, q):
-        a, b, c = self.axes
-        axes = np.array([a, b, c], dtype=float)
 
-        #scale points into unit sphere coordinate system for easy check, wether a point is inside or outside
-        # q_scaled = (x/a, y/b, z/c) -> transfrorms ellipsoid points into sphere points
-        # p (ellipsoid) -> p_scaled (unit sphere) 
-        q_scaled = q / axes[None, :]
-        
-        #get distance to center in unit sphere room for each point
-        dist_scaled = np.linalg.norm(q_scaled, axis=1) + 1e-12
-        
-             # dist_scaled > 1: point outside of ellipsoid
-             # dist_scaled < 1: point inside of ellipsoid
-
-        # direction for pushing back inward in ORIGINAL coordinates:
-        
-        axes2 = axes * axes
-        directions = (q / axes2[None, :]) / dist_scaled[:, None]
-            #q / axes^2 -> (x/a², y/b², z/c²): Weighted Direction pointing outside of ellipsoid -> long axes have less weigth (because there is more room) then short axes (small room until wall)
-            # (q / axes2[None, :]) / dist_scaled[:, None] -> normalize direction, so force and direction are separated
-
-        # soft wall only outside (s>1)
-        excess = np.maximum(0.0, dist_scaled - 1.0) #minus 1 to only meassure the outside part
-        F = -(self.wall * excess)[:, None] * directions
-        return F
-    '''
     def forces(self, q):
         axes = np.asarray(self.axes, dtype=float)
         axes2 = axes * axes
@@ -385,7 +357,7 @@ def spring_layout_3d_constrained(
         bbox_vol = float(extent[0] * extent[1] * extent[2])
         k = (bbox_vol / n) ** (1.0 / 3.0) # 3rd square-root of cube = edge-length of cube = estimate for k
 
-        print(k)
+        #print(k)
 
     #Temperature
     #big steps in the beginning, small steps later for equilibrium
@@ -446,9 +418,7 @@ def spring_layout_3d_constrained(
         t -= dt #lower temperature
         if (np.linalg.norm(step) / n) < threshold:
             break
-
-    #print(type(pos), getattr(pos, "shape", None))
-    #print(type(center), np.asarray(center).shape)   
+  
     
     pos += np.asarray(center, dtype=float) # add center shift for 3D placement relativ to other orgnaells
     
