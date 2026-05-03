@@ -20,5 +20,5 @@ print(loc_mapped.head())
 #Safe Failed Mapping to file
 loc_mapped[loc_mapped["uniprot_id"].isna()].to_csv("location_with_uniprot_fromfile_failed.tsv", sep="\t", index=False)
 
-#Safe mapped localization data to file (includes failed mapping as missing numbers in uniprot_id)
+#Safe mapped localization data to file (includes failed mapping as missing numbers in uniprot_id
 loc_mapped.to_csv("location_with_uniprot_fromfile.tsv", sep="\t", index=False)
