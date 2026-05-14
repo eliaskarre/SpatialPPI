@@ -1,12 +1,11 @@
 # SpatialPPI
 
-<img width="300" height="300" alt="Screenshot 2026-01-23 172917" src="https://github.com/user-attachments/assets/87293a4c-877c-49f2-bc32-25b5033d4247" />
-
-
 SpatialPPI builds a **spatially constrained 3D representation** of a human protein–protein interaction (PPI) network by combining interaction edges with subcellular localization annotations. The repository contains both:
 
 1. a reusable Python CLI pipeline for coordinate generation, and
 2. analysis/plotting notebooks-style scripts and exported figures/tables used during project exploration.
+
+<img width="300" height="300" alt="Screenshot 2026-01-23 172917" src="https://github.com/user-attachments/assets/87293a4c-877c-49f2-bc32-25b5033d4247" />
 
 ---
 
