@@ -29,8 +29,6 @@ The implementation supports multi-localized proteins (a protein can appear in mu
 
 ## What was done in this repository
 
-Based on the current files, the project work includes:
-
 ### 1) Data preparation and mapping
 
 - Scripts in `data/` map gene/protein identifiers to UniProt and normalize localization tables.
