@@ -6,7 +6,7 @@ SpatialPPI builds a **spatially constrained 3D representation** of a human prote
 2. analysis/plotting notebooks-style scripts and exported figures/tables used during project exploration.
 
 <img width="300" height="300" alt="Screenshot 2026-01-23 172917" src="https://github.com/user-attachments/assets/87293a4c-877c-49f2-bc32-25b5033d4247" />
-
+<img width="800" height="1184" alt="Screenshot 2026-01-234" src="https://github.com/user-attachments/assets/2a141a51-ff16-4b13-bcd3-d56a5754bdf9" />
 ---
 
 ## What this project does
