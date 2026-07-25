@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-ppi_path = "SpatialPPI/data/consensus_ppi_bioplex_biogrid_intact_huri_edgelist.tsv"
+ppi_path = "consensus_ppi_bioplex_biogrid_intact_huri_edgelist.tsv"
 
 edges = pd.read_csv(
     ppi_path,
