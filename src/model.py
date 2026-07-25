@@ -184,6 +184,6 @@ class CellModel:
                 yaxis=dict(visible=False),
                 zaxis=dict(visible=False),
                 aspectmode="data"
-            ),
+            )
         )
         fig.show()

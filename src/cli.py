@@ -17,12 +17,12 @@ def parse_list(s: str) -> List[str]:
 
 def run() -> int:
     p = argparse.ArgumentParser(
-        prog="cell_layout",
+        prog="SpatialPPI",
         description=(
             "Constrained 3D layout of a whole-cell PPI graph by locations/organelles. "
             "Inputs: PPI edge list + localization table + JSON config. "
             "Outputs: per-location 3D coordinates + optional Plotly graph."
-        ),
+        )
     )
 
     p.add_argument("--ppi", required=True, help="Path to 2-column edge list TSV/CSV")
@@ -70,7 +70,7 @@ def run() -> int:
     
     # Load data
     G = load_ppi_graph(args.ppi)
-    #print(G)
+
     loc_to_proteins, protein_to_locations, loc_df = load_localizations(args.localizations)
     init_locations_attribute(G)
 
