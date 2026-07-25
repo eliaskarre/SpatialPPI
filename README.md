@@ -5,7 +5,7 @@ SpatialPPI builds a **spatially constrained 3D representation** of a human prote
 1. a reusable Python CLI pipeline for coordinate generation, and
 2. analysis/plotting notebooks-style scripts and exported figures/tables used during project exploration.
 
-<img width="700" alt="Screenshot 2026-07-25 180736" src="https://github.com/user-attachments/assets/a6d3273e-9ecf-4252-9301-8155e90e3eaa" />
+<img width="700" alt="Screenshot 2026-07-25 180736" src="https://github.com/user-attachments/assets/5e37ba49-5131-4900-ab44-276fae24a05b" />
 
 
 ## What this project does
