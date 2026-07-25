@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-loc = pd.read_csv("SpatialPPI/data/protein_location_HPA_GO.tsv", sep="\t", dtype=str)
+loc = pd.read_csv("protein_location_HPA_GO.tsv", sep="\t", dtype=str)
 
 counts = (
     loc["location"]
