@@ -9,6 +9,11 @@ SpatialPPI builds a **spatially constrained 3D representation** of a human prote
 <img width="180" height="300" alt="Screenshot 2026-01-234" src="https://github.com/user-attachments/assets/2a141a51-ff16-4b13-bcd3-d56a5754bdf9" />
 <img width="180" height="300" alt="Screenshot 2026-01-232172917" src="https://github.com/user-attachments/assets/99b77a2b-5ed1-42c0-b2c1-7a86d04a7e68" />
 
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=xbDA_zAUHOY">
+    <img src="https://img.youtube.com/vi/xbDA_zAUHOY/maxresdefault.jpg" alt="SpatialPPI demo video" width="600">
+  </a>
+</p>
 
 ## What this project does
 
