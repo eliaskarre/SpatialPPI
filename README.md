@@ -8,10 +8,10 @@ SpatialPPI builds a **spatially constrained 3D representation** of a human prote
 <p align="center">
   <a href="https://www.youtube.com/watch?v=xbDA_zAUHOY">
     <img src="https://img.youtube.com/vi/xbDA_zAUHOY/maxresdefault.jpg" alt="SpatialPPI demo video" width="600">
-    <img width="150" height="150" alt="Screenshot 2026-01-23 172917" src="https://github.com/user-attachments/assets/87293a4c-877c-49f2-bc32-25b5033d4247" />
-    <img width="90" height="150" alt="Screenshot 2026-01-234" src="https://github.com/user-attachments/assets/2a141a51-ff16-4b13-bcd3-d56a5754bdf9" />
-    <img width="90" height="150" alt="Screenshot 2026-01-232172917" src="https://github.com/user-attachments/assets/99b77a2b-5ed1-42c0-b2c1-7a86d04a7e68" />
   </a>
+  <img width="150" height="150" alt="Screenshot 2026-01-23 172917" src="https://github.com/user-attachments/assets/87293a4c-877c-49f2-bc32-25b5033d4247" />
+  <img width="90" height="150" alt="Screenshot 2026-01-234" src="https://github.com/user-attachments/assets/2a141a51-ff16-4b13-bcd3-d56a5754bdf9" />
+  <img width="90" height="150" alt="Screenshot 2026-01-232172917" src="https://github.com/user-attachments/assets/99b77a2b-5ed1-42c0-b2c1-7a86d04a7e68" />
 </p>
 
 ## What this project does
